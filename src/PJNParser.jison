@@ -5,6 +5,7 @@
 
 	var SuperParse=parser.parse;
 	parser.parse=function(input,callback,complete,error,lineNo) {
+		console.log("parser",input);
 		parser.lexer.options.ranges=true;
 		var yy=parser.yy;
 		yy.tags={};
@@ -66,14 +67,14 @@
 	}
 	
 	function AddMove(yy,move) {
-		//console.log("AddMove",move);
+		//console.warn("AddMove",move);
 		AddNode(yy,{
 			move: move,
 		});
 	}
 
 	function AddComment(yy,comment) {
-		comment=/\{+\s*(.*?)\s*\}+/m.exec(comment)[1];
+		//console.warn("AddComment",comment);
 		AddNode(yy,{
 			comment: comment,
 		});
@@ -221,7 +222,7 @@ Square           :
 	ALPHASQUARE | NUMSQUARE ;
 	
 COMMENT:
-	"{" COMMENTCHARS "}" BLANK? { /*console.log("comment",$2.join('').replace(/\s+/g,' '));*/ };
+	"{" COMMENTCHARS "}" BLANK? { AddComment(yy,$2.join('').replace(/\s+/g,' ')); };
 	
 COMMENTCHARS:
 	COMMENTCHAR* ;

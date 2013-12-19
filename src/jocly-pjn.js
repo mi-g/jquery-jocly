@@ -26,7 +26,7 @@
 		console.log("init", options)
 		var $this=this;
 		this.options = {
-			defaultGame: 'draughts',
+			defaultGame: 'classic-chess',
 			data: null,
 			dataUrl: null,
 			strings: {
@@ -41,6 +41,7 @@
 				variation: 'V',
 			},
 			varClasses: ['jocly-pjn-variation-1','jocly-pjn-variation-2','jocly-pjn-variation-3'],
+			commentsInitialVisible: true,
 		}
 		if (options)
 			$.extend(true,this.options, options);
@@ -95,22 +96,33 @@
 		});
 	}
 	PJN.prototype.parse = function(data) {
-		//console.log("PJN data:",data);
+		console.log("PJN data:",data);
 		var $this=this;
 		this.pjnData = data;
 		this.jqElm.html(this.options.strings.parsingPJN);
 
 		this.games=[];
 		PJNParser.parse(data,function(game) {
+			console.log("parsed game",game);
 			$this.games.push(game);
 		},function() {
 			$this.jqElm.empty();
-			$this.buildChoice();
+			if($this.games.length==1) {
+				$this.jqView=$("<div/>").addClass("jocly-pjn").appendTo($this.jqElm);
+				var game=$this.games[0];
+				var pjnGame=$this.pjnData.substr(game.offset,game.length);
+				$this.parseGame(pjnGame,function() {
+					$this.gotoNode($this.game.root);				
+				});
+			}
+			else if($this.games.length>1)
+				$this.buildChoice();
 		},function(error) {
 			$("<pre/>").text(error).addClass("jocly-pjn-error").appendTo($this.jqElm);
 		},0);
 	}
 	PJN.prototype.buildChoice = function() {
+		console.log("buildChoice",this.games);
 		var $this=this;
 		//this.jqElm.find("select.jocly-pjn-selector").remove();
 		var select=$("<select/>").addClass("jocly-pjn-selector");
@@ -219,7 +231,7 @@
 	
 	PJN.prototype.makeNodesDOM = function(node,level,crc,prev,prevPrev) {
 		var $this=this;
-		function MoveClickHandler(elm,node) {
+		function SetMoveClickHandler(elm,node) {
 			elm.on("click",function() {
 				$(this).addClass("jocly-pjn-pending-move");
 				$this.gotoNode(node);				
@@ -234,9 +246,10 @@
 					elm.append($("<span/>").addClass("jocly-pjn-move-number").text((Math.floor(node.moveIndex/2)+1)+"."));
 				else if(start)
 					elm.append($("<span/>").addClass("jocly-pjn-move-number").text((Math.floor(node.moveIndex/2)+1)+"..."));
-				elm.append($("<span/>").addClass("jocly-pjn-move")
-					.attr("jocly-pjn-crc",$.joclyCRC32(node.move,$.joclyCRC32(prev,crc))).text(node.move));
-				SetMoveClickHandler(elm,node);
+				var elmMove=$("<span/>").addClass("jocly-pjn-move")
+					.attr("jocly-pjn-crc",$.joclyCRC32(node.move,$.joclyCRC32(prev,crc))).text(node.move);
+				elm.append(elmMove);
+				SetMoveClickHandler(elmMove,node);
 				start=false;
 				prevPrev=prev;
 				prev=node.move;
@@ -245,6 +258,7 @@
 				var comment=$("<span/>").addClass("jocly-pjn-comment").text(node.comment);
 				elm.append(this.makeViewToggler({
 					label: this.options.strings.comment,
+					show: this.options.commentsInitialVisible,
 				},comment)).append(comment);
 			}
 			if(node.variation) {
@@ -380,6 +394,7 @@
 $(document).ready(function() {
 
 	$("[data-jocly-pjn]").each(function() {
+		console.log("Creating static jocly-pjn");
 		$(this).joclyPJN();
 	});
 

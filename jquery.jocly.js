@@ -1,7 +1,17 @@
 if (!jQuery) {
 	throw new Error("Jocly plugin requires jQuery")
 }
-;
+;/* 
+* Copyright (c) 2006 Andrea Ercolino      
+* Released under the MIT license
+* http://www.opensource.org/licenses/mit-license.php
+*/
+
+/**
+* @module jquery-jocly
+* @overview CRC32 calculation.
+*/
+
 (function($) {
 	
 		var crc32Table = 
@@ -54,9 +64,15 @@ if (!jQuery) {
 	
 }(jQuery));
 
-;if (!jQuery) {
-	throw new Error("Jocly plugin requires jQuery")
-}
+;/* This Source Code Form is subject to the terms of the Mozilla Public
+* License, v. 2.0. If a copy of the MPL was not distributed with this
+* file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+/**
+* @author mig <michel.gutierrez@gmail.com>
+* @module jquery-jocly
+* @overview Board game site integration.
+*/
 
 (function($) {
 	
@@ -122,15 +138,16 @@ if (!jQuery) {
 		switch(message.type) {
 		case 'ready':
 			this.ready=true;
+			console.log("gotoMessage",this.gotoMessage)
 			if(this.gotoMessage) {
 				this.sendMessage(this.gotoMessage);
 				this.gotoMessage=null;
 			}
 			break;
 		case 'display':
-			var crc=Crc32(message.initial);
+			var crc=$.joclyCRC32(message.initial);
 			message.moves.forEach(function(move) {
-				crc=Crc32(move.str,crc);
+				crc=$.joclyCRC32(move.str,crc);
 			});
 			$(document).trigger('jocly.display',{
 				type: 'display',
@@ -199,7 +216,16 @@ $(document).ready(function() {
 
 });
 
-;
+;/* This Source Code Form is subject to the terms of the Mozilla Public
+* License, v. 2.0. If a copy of the MPL was not distributed with this
+* file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+/**
+* @author mig <michel.gutierrez@gmail.com>
+* @module jquery-jocly
+* @overview Utilities for Portable Jocly Notation (includes PGN and PDN).
+*/
+
 (function($) {
 	
 	var GameTypes={
@@ -218,7 +244,7 @@ $(document).ready(function() {
 		console.log("init", options)
 		var $this=this;
 		this.options = {
-			defaultGame: 'draughts',
+			defaultGame: 'classic-chess',
 			data: null,
 			dataUrl: null,
 			strings: {
@@ -233,6 +259,7 @@ $(document).ready(function() {
 				variation: 'V',
 			},
 			varClasses: ['jocly-pjn-variation-1','jocly-pjn-variation-2','jocly-pjn-variation-3'],
+			commentsInitialVisible: true,
 		}
 		if (options)
 			$.extend(true,this.options, options);
@@ -287,22 +314,33 @@ $(document).ready(function() {
 		});
 	}
 	PJN.prototype.parse = function(data) {
-		//console.log("PJN data:",data);
+		console.log("PJN data:",data);
 		var $this=this;
 		this.pjnData = data;
 		this.jqElm.html(this.options.strings.parsingPJN);
 
 		this.games=[];
 		PJNParser.parse(data,function(game) {
+			console.log("parsed game",game);
 			$this.games.push(game);
 		},function() {
 			$this.jqElm.empty();
-			$this.buildChoice();
+			if($this.games.length==1) {
+				$this.jqView=$("<div/>").addClass("jocly-pjn").appendTo($this.jqElm);
+				var game=$this.games[0];
+				var pjnGame=$this.pjnData.substr(game.offset,game.length);
+				$this.parseGame(pjnGame,function() {
+					$this.gotoNode($this.game.root);				
+				});
+			}
+			else if($this.games.length>1)
+				$this.buildChoice();
 		},function(error) {
 			$("<pre/>").text(error).addClass("jocly-pjn-error").appendTo($this.jqElm);
 		},0);
 	}
 	PJN.prototype.buildChoice = function() {
+		console.log("buildChoice",this.games);
 		var $this=this;
 		//this.jqElm.find("select.jocly-pjn-selector").remove();
 		var select=$("<select/>").addClass("jocly-pjn-selector");
@@ -411,7 +449,7 @@ $(document).ready(function() {
 	
 	PJN.prototype.makeNodesDOM = function(node,level,crc,prev,prevPrev) {
 		var $this=this;
-		function MoveClickHandler(elm,node) {
+		function SetMoveClickHandler(elm,node) {
 			elm.on("click",function() {
 				$(this).addClass("jocly-pjn-pending-move");
 				$this.gotoNode(node);				
@@ -421,14 +459,15 @@ $(document).ready(function() {
 		var elm=$("<span/>").addClass("jocly-pjn-moves");
 		while(node) {
 			if(node.move) {
-				crc=Crc32(prevPrev,crc);
+				crc=$.joclyCRC32(prevPrev,crc);
 				if(node.side==1)
 					elm.append($("<span/>").addClass("jocly-pjn-move-number").text((Math.floor(node.moveIndex/2)+1)+"."));
 				else if(start)
 					elm.append($("<span/>").addClass("jocly-pjn-move-number").text((Math.floor(node.moveIndex/2)+1)+"..."));
-				elm.append($("<span/>").addClass("jocly-pjn-move")
-					.attr("jocly-pjn-crc",Crc32(node.move,Crc32(prev,crc))).text(node.move));
-				SetMoveClickHandler(elm,node);
+				var elmMove=$("<span/>").addClass("jocly-pjn-move")
+					.attr("jocly-pjn-crc",$.joclyCRC32(node.move,$.joclyCRC32(prev,crc))).text(node.move);
+				elm.append(elmMove);
+				SetMoveClickHandler(elmMove,node);
 				start=false;
 				prevPrev=prev;
 				prev=node.move;
@@ -437,6 +476,7 @@ $(document).ready(function() {
 				var comment=$("<span/>").addClass("jocly-pjn-comment").text(node.comment);
 				elm.append(this.makeViewToggler({
 					label: this.options.strings.comment,
+					show: this.options.commentsInitialVisible,
 				},comment)).append(comment);
 			}
 			if(node.variation) {
@@ -572,11 +612,13 @@ $(document).ready(function() {
 $(document).ready(function() {
 
 	$("[data-jocly-pjn]").each(function() {
+		console.log("Creating static jocly-pjn");
 		$(this).joclyPJN();
 	});
 
 });
 
+;PJNParser=(function() {
 ;/* parser generated by jison 0.4.13 */
 /*
   Returns a Parser object of the following structure:
@@ -675,7 +717,7 @@ case 13: AddTag(yy,$$[$0-4],$$[$0-2]);
 break;
 case 16: AddMove(yy,$$[$0-1]); 
 break;
-case 19: /*console.log("comment",$$[$0-2].join('').replace(/\s+/g,' '));*/ 
+case 19: AddComment(yy,$$[$0-2].join('').replace(/\s+/g,' ')); 
 break;
 case 46: this.$ = $$[$0-1] + $$[$0]; 
 break;
@@ -868,6 +910,7 @@ parse: function parse(input) {
 
 	var SuperParse=parser.parse;
 	parser.parse=function(input,callback,complete,error,lineNo) {
+		console.log("parser",input);
 		parser.lexer.options.ranges=true;
 		var yy=parser.yy;
 		yy.tags={};
@@ -929,14 +972,14 @@ parse: function parse(input) {
 	}
 	
 	function AddMove(yy,move) {
-		//console.log("AddMove",move);
+		//console.warn("AddMove",move);
 		AddNode(yy,{
 			move: move,
 		});
 	}
 
 	function AddComment(yy,comment) {
-		comment=/\{+\s*(.*?)\s*\}+/m.exec(comment)[1];
+		//console.warn("AddComment",comment);
 		AddNode(yy,{
 			comment: comment,
 		});
@@ -1394,4 +1437,24 @@ function Parser () {
 }
 Parser.prototype = parser;parser.Parser = Parser;
 return new Parser;
+})();
+
+
+if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
+exports.parser = parser;
+exports.Parser = parser.Parser;
+exports.parse = function () { return parser.parse.apply(parser, arguments); };
+exports.main = function commonjsMain(args) {
+    if (!args[1]) {
+        console.log('Usage: '+args[0]+' FILE');
+        process.exit(1);
+    }
+    var source = require('fs').readFileSync(require('path').normalize(args[1]), "utf8");
+    return exports.parser.parse(source);
+};
+if (typeof module !== 'undefined' && require.main === module) {
+  exports.main(process.argv.slice(1));
+}
+};
+return parser;
 })();

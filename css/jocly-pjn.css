@@ -4,6 +4,17 @@
 
 .jocly-pjn-selector {
 	margin-bottom: .5em;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	width: 100%;
+}
+
+.jocly-pjn-selector option {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;	
+	width: 100%;
 }
 
 .jocly-pjn-tags {

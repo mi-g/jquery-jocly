@@ -72,6 +72,7 @@
 		switch(message.type) {
 		case 'ready':
 			this.ready=true;
+			console.log("gotoMessage",this.gotoMessage)
 			if(this.gotoMessage) {
 				this.sendMessage(this.gotoMessage);
 				this.gotoMessage=null;
