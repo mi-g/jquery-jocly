@@ -1,0 +1,31 @@
+{
+  "name": "jquery.jocly",
+  "version": "0.1.0",
+  "description": "jQuery plugins for embedding board games into a web site.",
+  "homepage": "https://github.com/mi-g/jquery-jocly",
+  "main": "Gruntfile.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "grunt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mi_g/jquery-jocly.git"
+  },
+  "author": "Michel Gutierrez",
+  "license": "MPL2.0",
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-jison": "~1.2.1",
+    "grunt-contrib-cssmin": "~0.4.0",
+    "grunt-contrib-jshint": "~0.7.2",
+    "grunt-contrib-uglify": "~0.2.0",
+    "grunt-contrib-clean": "~0.4.0",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-copy": "~0.4.1",
+    "jison": "~0.4.2"
+  }
+}
