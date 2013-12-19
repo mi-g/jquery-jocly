@@ -1,3 +1,13 @@
+/* 
+* Copyright (c) 2006 Andrea Ercolino      
+* Released under the MIT license
+* http://www.opensource.org/licenses/mit-license.php
+*/
+
+/**
+* @module jquery-jocly
+* @overview CRC32 calculation.
+*/
 
 (function($) {
 	

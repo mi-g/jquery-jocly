@@ -1,3 +1,12 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+* License, v. 2.0. If a copy of the MPL was not distributed with this
+* file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+/**
+* @author mig <michel.gutierrez@gmail.com>
+* @module jquery-jocly
+* @overview Utilities for Portable Jocly Notation (includes PGN and PDN).
+*/
 
 (function($) {
 	
@@ -220,13 +229,13 @@
 		var elm=$("<span/>").addClass("jocly-pjn-moves");
 		while(node) {
 			if(node.move) {
-				crc=Crc32(prevPrev,crc);
+				crc=$.joclyCRC32(prevPrev,crc);
 				if(node.side==1)
 					elm.append($("<span/>").addClass("jocly-pjn-move-number").text((Math.floor(node.moveIndex/2)+1)+"."));
 				else if(start)
 					elm.append($("<span/>").addClass("jocly-pjn-move-number").text((Math.floor(node.moveIndex/2)+1)+"..."));
 				elm.append($("<span/>").addClass("jocly-pjn-move")
-					.attr("jocly-pjn-crc",Crc32(node.move,Crc32(prev,crc))).text(node.move));
+					.attr("jocly-pjn-crc",$.joclyCRC32(node.move,$.joclyCRC32(prev,crc))).text(node.move));
 				SetMoveClickHandler(elm,node);
 				start=false;
 				prevPrev=prev;

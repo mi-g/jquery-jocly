@@ -1,6 +1,12 @@
-if (!jQuery) {
-	throw new Error("Jocly plugin requires jQuery")
-}
+/* This Source Code Form is subject to the terms of the Mozilla Public
+* License, v. 2.0. If a copy of the MPL was not distributed with this
+* file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+/**
+* @author mig <michel.gutierrez@gmail.com>
+* @module jquery-jocly
+* @overview Board game site integration.
+*/
 
 (function($) {
 	
@@ -72,9 +78,9 @@ if (!jQuery) {
 			}
 			break;
 		case 'display':
-			var crc=Crc32(message.initial);
+			var crc=$.joclyCRC32(message.initial);
 			message.moves.forEach(function(move) {
-				crc=Crc32(move.str,crc);
+				crc=$.joclyCRC32(move.str,crc);
 			});
 			$(document).trigger('jocly.display',{
 				type: 'display',
