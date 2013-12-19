@@ -134,11 +134,10 @@ if (!jQuery) {
 		this.init(options);
 	}
 	Applet.prototype.messageListener = function(message) {
-		console.log("Received message",message);
+		//console.log("Received message",message);
 		switch(message.type) {
 		case 'ready':
 			this.ready=true;
-			console.log("gotoMessage",this.gotoMessage)
 			if(this.gotoMessage) {
 				this.sendMessage(this.gotoMessage);
 				this.gotoMessage=null;
@@ -158,7 +157,7 @@ if (!jQuery) {
 		}
 	}
 	Applet.prototype.sendMessage = function(message) {
-		console.log("sendMessage",message);
+		//console.log("sendMessage",message);
 		this.iframe[0].contentWindow.postMessage(message,joclyBaseURL);
 	}
 	Applet.prototype.goto = function(spec) {
@@ -370,7 +369,7 @@ $(document).ready(function() {
 
 	PJN.prototype.parseGame = function(data,callback) {
 		var $this=this;
-		console.log("parsing",data);
+		//console.log("parsing",data);
 		PJNParser.parse(data,function(game) {
 			console.log("parsed",game);
 			$this.game={
@@ -910,7 +909,7 @@ parse: function parse(input) {
 
 	var SuperParse=parser.parse;
 	parser.parse=function(input,callback,complete,error,lineNo) {
-		console.log("parser",input);
+		//console.log("parser",input);
 		parser.lexer.options.ranges=true;
 		var yy=parser.yy;
 		yy.tags={};
