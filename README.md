@@ -14,6 +14,8 @@ The *jquery.jocly* plugin embeds the main features of Jocly so games can be inte
 Using jquery.jocly
 ------------------
 
+If you just look after having a "play against the computer" applet in a site page, the easy way show in this example:
+
 ```
 <!doctype html>
 <html>
@@ -29,3 +31,5 @@ Using jquery.jocly
   </body>
 </html>
 ```
+
+This opens a 

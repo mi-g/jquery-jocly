@@ -309,18 +309,18 @@
 	}
 	
 	PJN.prototype.gotoNode = function(node) {
+		var gameName=this.options.defaultGame;
 		var spec={
-			game: this.options.defaultGame,
 			format: "pjn",
 			playedMoves: [],
 			tags: this.game.tags,
 		}
 		if(this.game.tags.JoclyGame)
-			spec.game=this.game.tags.JoclyGame;
+			gameName=this.game.tags.JoclyGame;
 		else if(this.game.tags.GameType) {
 			var m=/([0-9]+)(?:,([WB]),([0-9]+),([0-9]+),[ANS][0123](,[01])?)?/.exec(this.game.tags.GameType);
 			if(m)
-				spec.game=GameTypes[m[1]] || spec.game;
+				gameName=GameTypes[m[1]] || gameName;
 		}
 		var node0=node;
 		node=node.prev;
@@ -341,7 +341,7 @@
 		
 		if(this.game.tags.FEN)
 			spec.initial=this.game.tags.FEN;
-		this.applets.jocly("goto",spec);
+		this.applets.jocly("view",gameName,spec);
 	}
 	
 	PJN.prototype.highlightMove = function(message) {
@@ -388,8 +388,34 @@
 $(document).ready(function() {
 
 	$("[data-jocly-pjn]").each(function() {
-		console.log("Creating static jocly-pjn");
-		$(this).joclyPJN();
+		var $this=$(this);
+		$this.jocly();
+		if(this.hasAttribute("data-jocly-pjn-init")) {
+			var attr=$this.attr("data-jocly-pjn-init");
+			if(attr.length===0)
+				return;
+			try {
+				var arr=JSON.parse(attr);
+				try {
+					if(!Array.isArray(arr)) {
+						console.warn("jquery.jocly: data-jocly-pjn-init attribute is not an array");				
+					}
+					for(var i=0;i<arr.length;i++) {
+						var element=arr[i];
+						if(Array.isArray(element))
+							$this.jocly.apply($this,element);						
+						else {
+							$this.jocly.apply($this,arr);
+							return;
+						}
+					}
+				} catch(e) {
+					console.warn("jquery.jocly: data-jocly-pjn-init error:",e);					
+				}
+			} catch(e) {
+				console.warn("jquery.jocly: data-jocly-pjn-init attribute has no JSON valid value");
+			}
+		}
 	});
 
 });

@@ -23,7 +23,7 @@
 		console.log("init", options)
 		var $this=this;
 		this.options = {
-			width : 400,
+			width : '100%',
 			height : 450,
 			mode : "splash",
 		}
@@ -91,16 +91,26 @@
 		}
 	}
 	Applet.prototype.sendMessage = function(message) {
-		//console.log("sendMessage",message);
-		if(this.ready)
+		if(this.ready) {
+			//console.log("sendMessage send",message);
 			this.iframe[0].contentWindow.postMessage(message,joclyBaseURL);
-		else
+		} else {
+			//console.log("sendMessage queue",message);
 			this.queuedMessages.push(message);
+		}
 	}
-	Applet.prototype.goto = function(spec) {
+	Applet.prototype.view = function(gameName,spec) {
 		this.sendMessage({
-			type: "import",
+			type: "view",
+			gameName: gameName,
 			data: spec,
+		});
+	}
+	Applet.prototype.localplay = function(gameName,spec) {
+		this.sendMessage({
+			type: "localplay",
+			gameName: gameName,
+			data: spec || {},
 		});
 	}
 	Applet.prototype.setFeatures = function(features) {
@@ -149,7 +159,34 @@
 $(document).ready(function() {
 
 	$("[data-jocly]").each(function() {
-		$(this).jocly();
+		var $this=$(this);
+		$this.jocly();
+		if(this.hasAttribute("data-jocly-init")) {
+			var attr=$this.attr("data-jocly-init");
+			if(attr.length===0)
+				return;
+			try {
+				var arr=JSON.parse(attr);
+				try {
+					if(!Array.isArray(arr)) {
+						console.warn("jquery.jocly: data-jocly-init attribute is not an array");				
+					}
+					for(var i=0;i<arr.length;i++) {
+						var element=arr[i];
+						if(Array.isArray(element))
+							$this.jocly.apply($this,element);						
+						else {
+							$this.jocly.apply($this,arr);
+							return;
+						}
+					}
+				} catch(e) {
+					console.warn("jquery.jocly: data-jocly-init error:",e);					
+				}
+			} catch(e) {
+				console.warn("jquery.jocly: data-jocly-init attribute has no JSON valid value");
+			}
+		}
 	});
 
 });
