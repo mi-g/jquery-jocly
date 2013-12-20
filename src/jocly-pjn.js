@@ -45,9 +45,16 @@
 		if (options)
 			$.extend(true,this.options, options);
 		this.listener=function(event,data) {
-			$this.highlightMove(data);				
+			switch(data.type) {
+			case 'display':
+				$this.highlightMove(data);
+				break;
+			case 'undisplay':
+				$this.unhighlightMove(data);
+				break;
+			}
 		}
-		$(document).bind("jocly.display",this.listener);
+		$(document).bind("jocly",this.listener);
 		this.content = this.jqElm.html();
 		this.jqElm.empty();
 		if(this.options.data)
@@ -62,7 +69,7 @@
 		this.jqElm.empty();
 		this.jqElm.html(this.content);
 		this.jqElm.data("jocly-pjn", null);
-		$(document).unbind("jocly.display",this.listener);
+		$(document).unbind("jocly",this.listener);
 	}
 	PJN.prototype.update = function(options) {
 		this.remove();
@@ -345,8 +352,12 @@
 	}
 	
 	PJN.prototype.highlightMove = function(message) {
-		this.jqElm.find(".jocly-pjn-move").removeClass("jocly-pjn-current-move jocly-pjn-pending-move");
+		this.unhighlightMove(message); 
 		this.jqElm.find(".jocly-pjn-move[jocly-pjn-crc='"+message.crc+"']").addClass("jocly-pjn-current-move");
+	}
+
+	PJN.prototype.unhighlightMove = function(message) {
+		this.jqElm.find(".jocly-pjn-move").removeClass("jocly-pjn-current-move jocly-pjn-pending-move");
 	}
 
 	$.fn.joclyPJN = function() {

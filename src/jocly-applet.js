@@ -14,13 +14,11 @@
 	var iframeIdRef = 1;
 
 	function Applet(jqElm) {
-		console.log("create applet");
 		this.jqElm = jqElm;
 		this.ready = false;
 		this.queuedMessages = [];
 	}
 	Applet.prototype.init = function(options) {
-		console.log("init", options)
 		var $this=this;
 		this.options = {
 			width : '100%',
@@ -63,12 +61,11 @@
 		this.jqElm.data("jocly-applet", null);
 	}
 	Applet.prototype.update = function(options) {
-		console.log("update", arguments);
 		this.remove();
 		this.init(options);
 	}
 	Applet.prototype.messageListener = function(message) {
-		//console.log("Received message",message);
+		console.log("jocly-applet received message from iframe",message);
 		switch(message.type) {
 		case 'ready':
 			this.ready=true;
@@ -78,26 +75,28 @@
 			this.queuedMessages=[];
 			break;
 		case 'display':
-			var crc=$.joclyCRC32(message.initial);
-			message.moves.forEach(function(move) {
-				crc=$.joclyCRC32(move.str,crc);
-			});
-			$(document).trigger('jocly.display',{
-				type: 'display',
-				crc: crc,
-			});
-			console.log("Applet sent display message");
+			if(message.initial || message.moves) {
+				var crc=$.joclyCRC32(message.initial || '');
+				if(message.moves)
+					message.moves.forEach(function(move) {
+						crc=$.joclyCRC32(move.str,crc);
+					});
+				$(document).trigger('jocly',{
+					type: 'display',
+					crc: crc,
+				});
+			} else
+				$(document).trigger('jocly',{
+					type: 'undisplay',
+				});
 			break;
 		}
 	}
 	Applet.prototype.sendMessage = function(message) {
-		if(this.ready) {
-			//console.log("sendMessage send",message);
+		if(this.ready)
 			this.iframe[0].contentWindow.postMessage(message,joclyBaseURL);
-		} else {
-			//console.log("sendMessage queue",message);
+		else
 			this.queuedMessages.push(message);
-		}
 	}
 	Applet.prototype.view = function(gameName,spec) {
 		this.sendMessage({
