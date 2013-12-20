@@ -9,26 +9,81 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
 	<link rel="stylesheet" href="jquery.jocly.min.css">
-    <!-- 
-	<link rel="stylesheet" href="jquery.jocly.css">
- 	-->
+ 	<style type="text/css">
+ .strong {
+ 	font-weight: bold;
+ }
+ 	</style>
+ 	
+ 	
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
 	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 	<script src="jquery.jocly.min.js"></script>
-	<!-- 
-	<script src="jquery.jocly.js"></script>
-	 -->
     <title>Jquery-jocly by mi-g</title>
     
     <script>
-$(document).ready(function() {
-	$("#jocly-pjn")
-		.joclyPJN("attachApplet",$("#jocly-applet"))
-		.joclyPJN("load",$("#jocly-pjn-data").text());
-});
+    $(document).ready(function() {
+    	$("#jocly-pjn-white,#jocly-pjn-black,#jocly-pjn-when").hide();
+    	$("#jocly-pjn")
+    		.joclyPJN("setOptions",{
+    			onParsedGame: function(game) {
+    				console.log("parsed tags",game.tags);
+    				if(game.tags.White)
+    					$("#jocly-pjn-white").show().find("span").text(game.tags.White);
+    				else
+    					$("#jocly-pjn-white").hide();
+    				if(game.tags.Black)
+    					$("#jocly-pjn-black").show().find("span").text(game.tags.Black);
+    				else
+    					$("#jocly-pjn-black").hide();
+    				if(game.tags.Date)
+    					$("#jocly-pjn-when").show().find("span").text(game.tags.Date);
+    				else
+    					$("#jocly-pjn-when").hide();
+    			},
+    		})
+    		.joclyPJN("attachApplet",$("#jocly-applet"))
+    		.joclyPJN("load",$("#jocly-pjn-data").text());
+
+    	var navigation=false;
+    	var history=false;
+    	var controls=false;
+    	var toolbar=false;
+    	
+    	function UpdateAppletOptions() {
+    		$("#jocly-applet").jocly("setFeatures",{
+    			hasNavigation: navigation,
+    			hasControls: controls,
+    			hasHistory: history,
+    			hasToolbar: toolbar,
+    		});
+    	}
+    	
+    	UpdateAppletOptions();
+    	
+    	$("#toggleNavigation").on("click",function() {
+    		navigation=!navigation;
+    		UpdateAppletOptions();
+    	});
+    	$("#toggleHistory").on("click",function() {
+    		history=!history;
+    		UpdateAppletOptions();
+    	});
+    	$("#toggleToolbar").on("click",function() {
+    		toolbar=!toolbar;
+    		UpdateAppletOptions();
+    	});
+    	$("#toggleControls").on("click",function() {
+    		controls=!controls;
+    		UpdateAppletOptions();
+    	});
+    	
+
+    	
+    });
     </script>
     
   </head>
@@ -80,8 +135,16 @@ $(document).ready(function() {
         
         </section>
         <aside id="sidebar">
+        	<div id="jocly-pjn-white">White: <span class="strong"></span></div>
+        	<div id="jocly-pjn-black">Black: <span class="strong"></span></div>
+        	<div id="jocly-pjn-when">When: <span class="strong"></span></div>
+        	<br/>
 			<div id="jocly-pjn" data-jocly-pjn></div>
         	<p><i>Click on the moves above to update the board</i></p>
+        	<p><button id="toggleNavigation">Toggle navigation</button></p>
+        	<p><button id="toggleHistory">Toggle history</button></p>
+        	<p><button id="toggleControls">Toggle controls</button></p>
+        	<p><button id="toggleToolbar">Toggle toolbar</button></p>
         </aside>
 
       </div>

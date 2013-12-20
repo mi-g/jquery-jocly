@@ -83,7 +83,7 @@ if (!jQuery) {
 		console.log("create applet");
 		this.jqElm = jqElm;
 		this.ready = false;
-		this.gotoMessage = null;
+		this.queuedMessages = [];
 	}
 	Applet.prototype.init = function(options) {
 		console.log("init", options)
@@ -138,10 +138,10 @@ if (!jQuery) {
 		switch(message.type) {
 		case 'ready':
 			this.ready=true;
-			if(this.gotoMessage) {
-				this.sendMessage(this.gotoMessage);
-				this.gotoMessage=null;
-			}
+			this.queuedMessages.forEach(function(message) {
+				this.sendMessage(message);
+			},this);
+			this.queuedMessages=[];
 			break;
 		case 'display':
 			var crc=$.joclyCRC32(message.initial);
@@ -158,17 +158,22 @@ if (!jQuery) {
 	}
 	Applet.prototype.sendMessage = function(message) {
 		//console.log("sendMessage",message);
-		this.iframe[0].contentWindow.postMessage(message,joclyBaseURL);
+		if(this.ready)
+			this.iframe[0].contentWindow.postMessage(message,joclyBaseURL);
+		else
+			this.queuedMessages.push(message);
 	}
 	Applet.prototype.goto = function(spec) {
-		var message={
+		this.sendMessage({
 			type: "import",
 			data: spec,
-		};
-		if(this.ready)
-			this.sendMessage(message);
-		else
-			this.gotoMessage=message;
+		});
+	}
+	Applet.prototype.setFeatures = function(features) {
+		this.sendMessage({
+			type: "features",
+			features: features,		
+		});
 	}
 	
 	$.fn.jocly = function() {
@@ -234,13 +239,11 @@ $(document).ready(function() {
 	}
 
 	function PJN(jqElm) {
-		console.log("create PJN");
 		this.jqElm = jqElm;
 		this.ajaxReq = null;
 		this.applets = $();
 	}
 	PJN.prototype.init = function(options) {
-		console.log("init", options)
 		var $this=this;
 		this.options = {
 			defaultGame: 'classic-chess',
@@ -259,6 +262,7 @@ $(document).ready(function() {
 			},
 			varClasses: ['jocly-pjn-variation-1','jocly-pjn-variation-2','jocly-pjn-variation-3'],
 			commentsInitialVisible: true,
+			onParsedGame: function() {},
 		}
 		if (options)
 			$.extend(true,this.options, options);
@@ -273,6 +277,9 @@ $(document).ready(function() {
 		else if(this.options.dataUrl)
 			this.loadRemote(this.options.dataUrl);
 	}
+	PJN.prototype.setOptions = function(options) {
+		$.extend(true,this.options,options);
+	}
 	PJN.prototype.remove = function() {
 		this.jqElm.empty();
 		this.jqElm.html(this.content);
@@ -280,7 +287,6 @@ $(document).ready(function() {
 		$(document).unbind("jocly.display",this.listener);
 	}
 	PJN.prototype.update = function(options) {
-		console.log("update", arguments);
 		this.remove();
 		this.init(options);
 	}
@@ -313,14 +319,12 @@ $(document).ready(function() {
 		});
 	}
 	PJN.prototype.parse = function(data) {
-		console.log("PJN data:",data);
 		var $this=this;
 		this.pjnData = data;
 		this.jqElm.html(this.options.strings.parsingPJN);
 
 		this.games=[];
 		PJNParser.parse(data,function(game) {
-			console.log("parsed game",game);
 			$this.games.push(game);
 		},function() {
 			$this.jqElm.empty();
@@ -339,7 +343,6 @@ $(document).ready(function() {
 		},0);
 	}
 	PJN.prototype.buildChoice = function() {
-		console.log("buildChoice",this.games);
 		var $this=this;
 		//this.jqElm.find("select.jocly-pjn-selector").remove();
 		var select=$("<select/>").addClass("jocly-pjn-selector");
@@ -369,15 +372,13 @@ $(document).ready(function() {
 
 	PJN.prototype.parseGame = function(data,callback) {
 		var $this=this;
-		//console.log("parsing",data);
 		PJNParser.parse(data,function(game) {
-			console.log("parsed",game);
 			$this.game={
 				tags: game.tags,
 				root: game.rootNode,
 			}
+			$this.options.onParsedGame(game);
 		},function() {
-			console.log("done parsing")
 			$this.updateGameTree();
 			$this.display();
 			if(callback)
@@ -566,11 +567,10 @@ $(document).ready(function() {
 	}
 	
 	PJN.prototype.highlightMove = function(message) {
-		console.log("Highlight",message);
 		this.jqElm.find(".jocly-pjn-move").removeClass("jocly-pjn-current-move jocly-pjn-pending-move");
 		this.jqElm.find(".jocly-pjn-move[jocly-pjn-crc='"+message.crc+"']").addClass("jocly-pjn-current-move");
 	}
-	
+
 	$.fn.joclyPJN = function() {
 		var $arguments = arguments;
 		this.each(function() {
@@ -601,7 +601,6 @@ $(document).ready(function() {
 					pjn[method].apply(pjn, Array.prototype.splice
 							.call($arguments, 1));
 				}
-				console.log("pjn", pjn);
 			});
 		return this;
 	};
@@ -905,11 +904,12 @@ parse: function parse(input) {
 }};
 
 
-	console.log("PJNParser");
+	//console.log("PJNParser");
 
 	var SuperParse=parser.parse;
 	parser.parse=function(input,callback,complete,error,lineNo) {
 		//console.log("parser",input);
+		input+="\n"; // dirty way to fix a problem when the game ends on the last character
 		parser.lexer.options.ranges=true;
 		var yy=parser.yy;
 		yy.tags={};
@@ -931,7 +931,7 @@ parse: function parse(input) {
 	}
 
 	function SaveGame(yy) { 			
-
+		//console.warn("SaveGame");
 		if(yy.rootNode.next && yy.compiledGame) 
 			yy.compiledGame({
 				offset: yy.startOffset,
