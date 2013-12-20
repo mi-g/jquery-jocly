@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+	<link rel="stylesheet" href="jquery.jocly.min.css">
+ 	<style type="text/css">
+ .strong {
+ 	font-weight: bold;
+ }
+ 	</style>
+ 	
+ 	
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script src="jquery.jocly.min.js"></script>
+    <title>Jquery-jocly by mi-g</title>
+    
+    <script>
+    $(document).ready(function() {
+    	$("#jocly-pjn-white,#jocly-pjn-black,#jocly-pjn-when").hide();
+    	$("#jocly-pjn")
+    		.joclyPJN("setOptions",{
+    			onParsedGame: function(game) {
+    				console.log("parsed tags",game.tags);
+    				if(game.tags.White)
+    					$("#jocly-pjn-white").show().find("span").text(game.tags.White);
+    				else
+    					$("#jocly-pjn-white").hide();
+    				if(game.tags.Black)
+    					$("#jocly-pjn-black").show().find("span").text(game.tags.Black);
+    				else
+    					$("#jocly-pjn-black").hide();
+    				if(game.tags.Date)
+    					$("#jocly-pjn-when").show().find("span").text(game.tags.Date);
+    				else
+    					$("#jocly-pjn-when").hide();
+    			},
+    		})
+    		.joclyPJN("attachApplet",$("#jocly-applet"))
+    		.joclyPJN("load",$("#jocly-pjn-data").text());
+
+    	var navigation=false;
+    	var history=false;
+    	var controls=false;
+    	var toolbar=false;
+    	
+    	function UpdateAppletOptions() {
+    		$("#jocly-applet").jocly("setFeatures",{
+    			hasNavigation: navigation,
+    			hasControls: controls,
+    			hasHistory: history,
+    			hasToolbar: toolbar,
+    		});
+    	}
+    	
+    	//UpdateAppletOptions();
+    	
+    	$("#toggleNavigation").on("click",function() {
+    		navigation=!navigation;
+    		UpdateAppletOptions();
+    	});
+    	$("#toggleHistory").on("click",function() {
+    		history=!history;
+    		UpdateAppletOptions();
+    	});
+    	$("#toggleToolbar").on("click",function() {
+    		toolbar=!toolbar;
+    		UpdateAppletOptions();
+    	});
+    	$("#toggleControls").on("click",function() {
+    		controls=!controls;
+    		UpdateAppletOptions();
+    	});
+    	
+
+    	
+    });
+    </script>
+    
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Jquery-jocly</h1>
+        <h2>A jQuery plugin to integrate easily board games into a web site</h2>
+        <a href="https://github.com/mi-g/jquery-jocly" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+    
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+        
+        	<a href="index.html">Home</a>
+
+        	<h1>Multiple PJN view demo</h1>
+        	
+		    <div id="jocly-applet" data-jocly='{"width":"100%"}'></div>
+        
+
+		    <div>
+		    	<h3>Original PJN text</h3>
+				<pre id="jocly-pjn-data">
+			
+[Event "Blind|01|Piet Roozenburg"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "Heemskerk"]
+[Black "Roozenburg,P. (Piet)"]
+[Result "0-1"]
+[GameType "20"]
+[PlyCount "106"]
+
+1. 32-28 16-21 2. 37-32 11-16
+3. 41-37 7-11 4. 34-30 1-7 5. 30-25 19-23 6. 28x19 14x23 7. 25x14
+10x19 8. 31-27 17-22 9. 35-30 22x31 10. 37x17 11x22 11. 32-27 22x31
+12. 36x27 12-17 13. 46-41 15-20 14. 41-37 17-22 15. 37-32 22x31
+16. 32-28 23x32 17. 38x36 19-23 18. 43-38 6-11 19. 49-43 11-17
+20. 30-25 4-10 21. 25x14 10x19 22. 38-32 17-21 23. 42-38 21-27
+24. 32x21 16x27 25. 48-42 18-22 26. 33-29 23x34 27. 40x29 13-18
+28. 42-37 9-13 29. 39-33 5-10 30. 45-40 10-14 31. 50-45 7-11
+32. 37-31 14-20 33. 40-35 20-25 34. 47-42 19-23 35. 44-40 23x34
+36. 40x29 13-19 37. 29-24 19x30 38. 35x24 18-23 39. 45-40 8-13
+40. 31-26 23-28 41. 33-29 11-17 42. 40-34 13-18 43. 24-20 25x14
+44. 34-30 2-8 45. 30-25 8-13 46. 29-24 13-19 47. 24x13 18x9 48. 43-39
+14-20 49. 25x14 9x20 50. 38-33 20-24 51. 42-37 24-29 52. 33x24 28-32
+53. 37x28 22x44 0-1
+
+[Event "DC IJmuiden oc"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "Berg,van de,P."]
+[Black "Roozenburg,P. (Piet)"]
+[Result "0-1"]
+[GameType "20"]
+[PlyCount "74"]
+
+1. 32-28 16-21 2. 37-32 11-16
+3. 41-37 7-11 4. 34-30 1-7 5. 40-34 20-25 6. 44-40 21-26 7. 30-24
+19x30 8. 35x24 17-21 9. 50-44 12-17 10. 33-29 18-22 11. 38-33 13-18
+12. 28-23 7-12 13. 32-28 14-20 14. 40-35 9-13 15. 44-40 21-27
+16. 37-32 27x38 17. 43x32 26x37 18. 32x41 10-14 19. 42-38 22-27
+20. 49-43 4-10 21. 41-37 14-19 22. 23x14 10x30 23. 35x24 27-32
+24. 38x27 17-22 25. 28x17 11x42 26. 47x38 18-22 27. 38-32 12-17
+28. 43-38 16-21 29. 48-43 22-27 30. 33-28 8-12 31. 46-41 3-9
+32. 39-33 12-18 33. 41-37 17-22 34. 28x26 27-31 35. 36x27 18-23
+36. 29x18 13x42 37. 38x47 20x49 0-1
+
+[Event "DC IJmuiden oc"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "Binschorst"]
+[Black "Roozenburg,P. (Piet)"]
+[Result "0-1"]
+[GameType "20"]
+[PlyCount "93"]
+
+1. 33-28 18-23 2. 31-27 13-18
+3. 37-31 9-13 4. 34-30 20-25 5. 41-37 25x34 6. 39x30 17-22 7. 28x17
+11x22 8. 31-26 22x31 9. 36x27 6-11 10. 44-39 11-17 11. 27-21 16x27
+12. 32x21 18-22 13. 30-25 13-18 14. 39-33 8-13 15. 35-30 15-20
+16. 33-29 23x34 17. 40x29 10-15 18. 45-40 4-9 19. 30-24 19x30
+20. 25x34 14-19 21. 40-35 19-23 22. 50-45 5-10 23. 46-41 10-14
+24. 21-16 14-19 25. 49-44 7-11 26. 16x7 2x11 27. 44-40 22-28
+28. 38-32 19-24 29. 43-38 24x33 30. 38x29 13-19 31. 48-43 9-13
+32. 32-27 17-22 33. 26-21 22x31 34. 37x26 11-17 35. 41-36 19-24
+36. 43-38 24x33 37. 38x29 13-19 38. 42-38 28-33 39. 36-31 33x42
+40. 47x38 19-24 41. 38-33 1-7 42. 31-27 3-8 43. 34-30 23x25 44. 33-28
+25-30 45. 28-22 17x28 46. 21-16 28-32 47. 27x38 0-1
+
+
+				
+[Event "Snelheidstest CTG 2 2011"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "Diagram 13"]
+[Black "?"]
+[Result "*"]
+[GameType "20"]
+[Setup "1"]
+[FEN "W:W24,26,27,29,32,33,34,38,39,40,43,44,45,47,48:B2,7,8,10,12,13,14,15,16,17,18,20,21,23,25."]
+[PlyCount "1"]
+
+{ Fennema-Mathijsen } 1. 33-28 { en zwart heeft grote problemen } (
+1. 47-42 { partij } $2 14-19 2. 42-37 19x30 3. 27-22 17x28 4. 26x17
+12x21 5. 33x22 18x27 6. 29x9 8-13 7. 9x18 2-8 { Z+ } ) ( 1. 48-42
+14-19 2. 42-37 19x30 3. 27-22 17x28 4. 26x17 12x21 5. 33x22 18x27
+6. 29x9 8-13 7. 9x18 7-12 8. 18x7 2x11 $10 ) *
+
+[Event "Snelheidstest CTG 4 2011"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "Diagram 34"]
+[Black "?"]
+[Result "*"]
+[GameType "20"]
+[Setup "1"]
+[FEN "W:W27,28,30,32,33,35,37,38,39,43,48:B3,8,13,16,17,18,19,21,23,24,25."]
+[PlyCount "1"]
+
+{ Slaby-Cazemier } 1. 28-22 $10 ( 1. 39-34 3-9 2. 43-39 9-14 3. 48-43
+14-20 4. 34-29 $10 ) ( 1. 48-42 25x34 2. 39x30 23-29 { of ook 8-12 is
+gevaarlijk voor wit } ) *
+
+[Event "Snelheidstest CTG 5 2011"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "Diagram 50"]
+[Black "?"]
+[Result "*"]
+[GameType "20"]
+[Setup "1"]
+[FEN "W:W25,27,28,30,32,33,34,35,36,38,42,43:B6,8,11,12,13,14,15,16,17,19,23,24."]
+[PlyCount "23"]
+
+{ B. Winkel-Toet En nog een winstforcing voor wit. } 1. 25-20 14x25
+2. 27-22 15-20 3. 33-29 24x33 4. 38x9 19-23 5. 28x19 17x39 6. 34x43
+25x34 7. 9-4 20-25 8. 35-30 34-40 9. 4-27 25x34 10. 19-13 8x19
+11. 43-39 34x43 12. 27x26 { W+ } *
+
+[Event "Snelheidstest CTG 2 2012"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "Diagram 74"]
+[Black "?"]
+[Result "*"]
+[GameType "20"]
+[Setup "1"]
+[FEN "W:W25,26,28,32,33,34,35,38,48:B14,15,16,17,19,21,22,23,24."]
+[PlyCount "9"]
+
+{ Harmsma - Clerc } 1. 48-42 { Wit moet zo snel mogelijk naar 37 } (
+1. 34-30 22-27 2. 48-42 27-31 3. 26x37 21-26 { Z+ } ) ( 1. 48-43
+22-27 2. 43-39 17-22 3. 28x17 21x12 4. 32x21 16x27 { Z+ } )
+1... 22-27 2. 42-37 15-20 ( 2... 27-31 3. 33-29 31x22 4. 29x9 )
+3. 34-30 27-31 4. 33-29 31x22 5. 29x27 $10 *
+
+[Event "Snelheidstest CTG 3 2012"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "Diagram 87"]
+[Black "?"]
+[Result "*"]
+[GameType "20"]
+[Setup "1"]
+[FEN "W:W27,30,32,33,34,35,37,41:B13,16,17,18,19,21,24,25."]
+[PlyCount "24"]
+
+{ Milshin-Jansen (mvk) } 1. 37-31 { met een geforceerde variant,
+zwart kan niet goed afwijken } ( 1. 33-28 18-23 2. 27-22 24-29
+3. 22x11 16x7 4. 30-24 19x39 5. 28x8 7-12 6. 8x26 39-44 { en zwart
+won } ) 1... 21-26 2. 41-37 18-23 3. 34-29 23x34 4. 30x39 17-21
+5. 33-28 24-29 6. 39-34 29x40 7. 35x44 25-30 8. 44-40 { Zie ook de
+gemiste remise in Goeljajev-Lemmen } 13-18 9. 28-22 18-23 10. 32-28
+23x41 11. 40-35 26x37 12. 35x13 21x32 $10 *
+
+[Event "Snelheidstest CTG 4 2012"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "Diagram 92"]
+[Black "?"]
+[Result "*"]
+[GameType "20"]
+[Setup "1"]
+[FEN "W:W22,23,28,30,32,33,34,35,36,37,39,42,44,48,49,50:B1,4,6,7,8,9,10,12,13,14,19,20,21,24,25,26."]
+[PlyCount "19"]
+
+{ Idee Sijbrands: } 1. 23-18 12x23 2. 33-29 24x33 3. 30-24 20x40
+4. 35-30 25x43 5. 49x18 40x49 6. 37-31 26x37 7. 42x31 49x27 8. 28-23
+19x17 9. 31x2 13x22 10. 2x16 { W+ } *
+
+[Event "Snelheidstest CTG 4 2012"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "Diagram 97"]
+[Black "?"]
+[Result "*"]
+[GameType "20"]
+[Setup "1"]
+[FEN "W:W22,27,28,30,33,34,35,37,42,49:B8,9,11,12,13,15,16,19,20,25."]
+[PlyCount "11"]
+
+{ Ratz-Mogiljanski: Wit staat problematisch. } 1. 37-31 $1 ( 1. 49-43
+{ partij } 12-17 2. 43-39 17-21 3. 37-32 20-24 4. 42-37 21-26
+5. 37-31 26x37 6. 32x41 9-14 7. 41-37 14-20 8. 37-31 11-17 9. 22x11
+16x7 10. 31-26 24-29 11. 34x14 25x43 12. 14x25 { Z+ } ) ( { Op }
+1. 42-38 { of 1.37-32 volgt } 12-17 { Z+ } ) ( 1. 33-29 11-17
+2. 22x11 16x7 { Z+ } ) 1... 12-17 2. 27-21 $3 17x48 3. 49-43 48x39
+4. 34x43 25x34 5. 22-18 13x22 6. 28x6 { En wit moet nog even
+nauwkeurig spelen, maar de stand is remise } *
+
+[Event "Rekenstand CTG 4 2008"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "Diagram 8"]
+[Black "?"]
+[Result "*"]
+[GameType "20"]
+[Setup "1"]
+[FEN "W:W26,27,32,33,34,35,37,38,43:B8,10,14,16,17,18,21,23,24."]
+[PlyCount "11"]
+
+{ Baljakin-Ludwig 2008 Wit moet remise maken. } 1. 43-39 ( 1. 34-30
+23-29 2. 30x19 14x23 3. 33x24 23-28 4. 32x3 21x41 5. 3x21 16x27 { met
+een lastig, maar wel houdbaar eindspel voor wit. } ) ( 1. 33-28 17-22
+2. 28x30 22x33 3. 26x17 33-38 { Z+ } ) 1... 8-13 { en nu komt de
+echte beslissing pas. } 2. 33-28 ( 2. 37-31 10-15 3. 33-28 13-19
+4. 34-30 15-20 5. 38-33 20-25 6. 39-34 14-20 { Z+ } ) 2... 17-22
+3. 28x8 22x44 4. 26x17 14-20 5. 17-11 16x7 6. 8-2 $10 *
+
+[Event "Rekenstand CTG 6 2009"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "Diagram 20"]
+[Black "?"]
+[Result "*"]
+[GameType "20"]
+[Setup "1"]
+[FEN "W:W24,27,29,30,31,34,38,40,41,45:B6,13,15,16,17,18,19,20,23,25."]
+[PlyCount "3"]
+
+{ Studie Ludwig } 1. 41-36 ( 1. 31-26 17-22 2. 38-32 ( 2. 26-21 22x31
+3. 21-17 23-28 4. 41-37 31x33 5. 29x38 20x29 6. 34x12 25x34 7. 40x29
+19-24 8. 29x20 15x24 9. 12-7 16-21 10. 17x26 6-11 11. 7x16 24-29 $10
+) ( 2. 41-36 22x31 3. 36x27 23-28 4. 29-23 20x29 5. 23x32 18-23
+6. 40-35 29x40 7. 45x34 15-20 8. 38-33 20-24 { en de stand is in
+evenwicht } ) 2... 22x31 3. 26x37 6-11 4. 41-36 ( 4. 37-31 23-28
+5. 32x14 20x9 { en zwart staat beter } ) 4... 16-21 5. 37-31 (
+5. 36-31 11-16 6. 40-35 21-27 $10 ) 5... 11-16 6. 31-27 21-26
+7. 27-22 18x38 8. 29x9 20x29 9. 34x14 25x34 10. 40x29 38-43 11. 9-3
+43-49 12. 14-9 15-20 $10 ) ( 1. 38-32 17-21 ( { Na } 1... 17-22
+2. 41-36 22-28 ( 2... 6-11 3. 31-26 22x31 4. 36x27 11-17 5. 26-21
+17x26 6. 40-35 16-21 7. 27x16 26-31 8. 16-11 31-36 9. 11-7 36-41
+10. 7-2 41-46 ( 10... 41-47 11. 2-8 13x2 12. 24x22 47x24 13. 30x28 )
+11. 45-40 46x28 12. 2-8 13x2 13. 24x33 { W+ } ) 3. 31-26 28x37
+4. 27-22 18x27 5. 29x9 20x29 6. 34x14 25x34 7. 40x29 { wint het
+eindspel wel, vanwege de betere plaatsing van de witte stukken } )
+2. 31-26 23-28 3. 32x12 21x32 4. 12-8 ( 4. 12-7 32-38 { en zwart
+loopt naar 49 met remise } ) 4... 13x2 5. 24x13 32-38 6. 13-9 38-43
+7. 9-4 16-21 8. 26x17 43-49 9. 40-35 49-43 10. 4-9 { Om 20-24 te
+verhinderen } 43-32 { en wit wint de schijf terug met remise } )
+1... 17-22 ( 1... 6-11 2. 31-26 { en na } 17-22 3. 38-32 22x31
+4. 36x27 { wint wit ook weer zoals de varianten hierboven } )
+2. 38-32 { en wit komt in de varianten hierboven terecht die winnen }
+*
+
+[Event "Rekenstand CTG 3 2010"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "Diagram 23"]
+[Black "?"]
+[Result "*"]
+[GameType "20"]
+[Setup "1"]
+[FEN "B:W25,27,32,33,35,36,37,38,39,42,43,48:B6,8,10,11,12,14,16,17,18,19,23,24."]
+[PlyCount "28"]
+
+{ T. Sijbrands - C. Van Leeuwen 2003 } { Zwart staat in deze stand
+zeer moeilijk. Hij heeft diverse mogelijkheden, en in die varianten
+zijn er ook moeizame remises mogelijk. Het is dus vooral aan zwart om
+die te vinden. } 1... 17-21 ( 1... 10-15 2. 37-31 8-13 ( 2... 17-21 {
+komt op de andere variant neer } ) 3. 33-28 23-29 4. 31-26 18-23
+5. 27-22 16-21 6. 39-33 11-16 7. 22x11 6x17 8. 36-31 ) 2. 37-31 10-15
+( 2... 12-17 3. 31-26 8-13 ( 3... 10-15 4. 39-34 8-13 5. 33-28 { W+ }
+) 4. 33-28 23-29 5. 39-34 29x40 6. 35x44 { en de opsluiting is
+winnend. Twee voorbeelden: } 18-23 ( 6... 24-29 7. 43-39 10-15
+8. 39-33 29-34 9. 44-39 34x43 10. 38x49 19-24 11. 49-44 14-19
+12. 44-40 18-23 13. 42-38 23-29 14. 48-43 13-18 15. 27-22 { alleen
+zo! } $1 18x27 16. 43-39 { W+ } ) 7. 38-33 23-29 8. 43-38 29-34
+9. 44-39 34x43 10. 38x49 13-18 11. 36-31 { met op 18-23 altijd 33-29
+W+ } ) ( 2... 8-13 3. 31-26 11-17 4. 33-28 23-29 5. 39-33 29-34
+6. 43-39 34x43 7. 48x39 18-23 8. 42-37 12-18 9. 28-22 17x28 10. 26x17
+{ W+ } ) 3. 33-28 21-26 ( 3... 23-29 4. 28-22 8-13 5. 31-26 11-17
+6. 22x11 6x17 7. 42-37 18-23 8. 37-31 12-18 9. 48-42 14-20 10. 25x14
+19x10 11. 39-33 24-30 12. 35x24 29x20 13. 33-28 23-29 14. 27-22 18x27
+15. 31x11 16x7 16. 26x17 20-25 17. 17-12 7x18 18. 28-23 { met een
+kansrijk eindspel } ) 4. 39-33 26x37 5. 42x31 11-17 ( 5... 8-13
+6. 31-26 15-20 7. 43-39 12-17 8. 39-34 17-22 9. 28x17 11x31 10. 26x37
+18-22 11. 34-30 { en wit houdt groot voordeel met de
+klaverbladopsluiting } ) 6. 43-39 17-21 7. 31-26 15-20 $2 (
+7... 12-17 8. 36-31 8-13 9. 48-42 ( 9. 39-34 24-29 10. 33x24 19x39
+11. 28x8 39-44 12. 8-2 44-50 { en wit moet maar remise nemen met
+38-33 en 02-08. Na } 13. 48-43 18-22 14. 27x18 14-19 15. 2x30 15-20
+16. 25x14 17-22 17. 26x28 50x26 { verliest wit zelfs nog! } ) {
+remise was er nog mogelijk na } 9... 23-29 10. 39-34 ( 10. 42-37
+29-34 11. 39x30 18-23 12. 27-22 $2 ( 12. 33-29 $10 ) 12... 15-20
+13. 22x11 6x17 14. 31-27 13-18 15. 37-31 23-29 16. 28-23 19x37
+17. 30x10 21x43 18. 33x15 43-48 19. 31x42 48x5 { Z+ } ) 10... 29x40
+11. 35x44 15-20 12. 44-40 18-23 13. 27-22 24-29 14. 33x15 19-24
+15. 28x10 17x48 16. 26x17 48x45 $10 ) 8. 26x17 12x21 9. 28-22 8-13
+10. 39-34 6-11 11. 34-30 21-26 12. 48-42 26-31 13. 42-37 31x42
+14. 38x47 23-29 15. 33-28 *
+
+[Event "Rekenstand CTG 6 2011"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "Diagram 30"]
+[Black "?"]
+[Result "*"]
+[GameType "20"]
+[Setup "1"]
+[FEN "W:W25,26,30,31,33,34,35,36,38,39,40,41,43,45,46,49:B3,6,7,8,9,12,14,15,16,18,19,22,23,24,27,28."]
+[PlyCount "21"]
+
+{ Scholma-Hoopman (Fries Dagblad.) De analyse van Herman Spanjer
+bestaat uit drie combinatieve zettenreeksen. } 1. 41-37 14-20 (
+1... 12-17 $2 2. 34-29 23x34 3. 40x20 15x24 4. 25-20 14x34 5. 39x30
+28x48 6. 46-41 48x25 7. 35-30 25x32 8. 37x28 22x33 9. 31x4 { W+ } ) (
+1... 16-21 $2 2. 26x17 12x21 3. 38-32 27x29 4. 39-33 28x48 5. 25-20
+14x25 6. 31-26 48x31 7. 26x28 23x32 8. 34x1 25x34 9. 40x20 15x24
+10. 36x38 { W+ } ) 2. 25x14 9x20 3. 26-21 27-32 4. 38x27 20-25 { met
+ruim voldoende compensatie, maar mag zich niet vergrijpen aan: }
+5. 43-38 23-29 ( { Na } 5... 8-13 { kan wit de stand normaliseren en
+een schijf voor blijven met } 6. 46-41 3-9 7. 31-26 22x42 8. 38x47
+16x27 9. 33x31 9-14 10. 49-43 { al blijft de zwarte compensatie
+aanwezig. } ) ( { Zwart kan echter ook verder met: } 5... 3-9
+6. 49-43 15-20 7. 46-41 9-14 8. 31-26 22x42 9. 33x11 42x44 10. 40x49
+16x27 11. 34-29 23x34 12. 30x39 6x17 13. 43-38 24-29 14. 39-33 (
+14. 41-37 29-34 15. 39x30 25x34 $10 ) 14... 20-24 15. 41-37 27-32
+16. 37x28 12-18 17. 26-21 17x26 18. 45-40 25-30 19. 28-23 19x39
+20. 36-31 26x37 21. 38-32 37x28 22. 40-34 29x40 23. 35x13 { met
+remise } ) 6. 34x14 25x41 7. 36x47 28x39 8. 49-43 39x48 9. 14-9 48x17
+10. 9-4 22x31 11. 4x30 { W+ } *
+
+[Event "Analysestanden CTG 2 2012"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "gebaseerd op derksen-aleven"]
+[Black "?"]
+[Result "*"]
+[GameType "20"]
+[Setup "1"]
+[FEN "W:W27,28,31,32,33,35,37,38,40:B6,11,13,16,19,20,21,23,24."]
+[PlyCount "44"]
+
+{ Deze stand had kunnen voorkomen in de partij Henk Derksen- Tessa
+Aleven. Zoals duidelijk is zal zwart gaan winnen, al moet zwart
+uitkijken voor een verraderlijke redding. } 1. 40-34 ( { Het enige
+andere alternatief verliest snel: } 1. 28-22 20-25 2. 31-26 25-30
+3. 26x17 13-18 4. 22x13 11x42 5. 38x47 19x8 { Z+ } ) 1... 11-17 ( {
+Hier zat een enorme valstrik. Het zo logische } 1... 20-25 { is
+namelijk remise via het fraaie en lastig te vinden } $2 2. 33-29 $1
+24x42 3. 37x48 13-18 ( 3... 21-26 4. 48-42 26x48 5. 27-22 48x30
+6. 35x24 19x30 7. 28x8 ) ( 3... 11-17 4. 31-26 13-18 5. 48-42 { W+ }
+) 4. 31-26 19-24 5. 28x30 18-23 6. 26x17 11x31 7. 32-27 31x22
+8. 34-29 23x34 9. 30x39 22-27 10. 48-43 27-32 11. 35-30 25x34
+12. 39x30 32-37 13. 30-24 37-41 14. 24-19 $10 ) ( 1... 21-26 2. 34-30
+{ W+ } ) { Na de vorige zwarte zet loopt de variant geforceerd naar
+de winst } 2. 27-22 20-25 3. 22x11 6x17 4. 31-26 13-18 ( 4... 21-27
+5. 32x12 23x41 6. 12-7 24-30 7. 35x24 19x28 8. 26-21 16x27 9. 7-2
+13-18 10. 38-33 28x39 11. 2-7 $10 ) 5. 37-31 18-22 6. 31-27 22x31
+7. 26x37 21-26 8. 34-29 23x34 9. 32-27 25-30 10. 37-32 ( { Het
+alternatief verliest ook snel na } 10. 38-32 34-40 11. 35x44 30-34
+12. 37-31 26x37 13. 32x41 24-30 14. 41-36 30-35 15. 36-31 19-24
+16. 28-23 34-39 { Z+ } ) 10... 17-21 11. 28-22 19-23 12. 33-28 34-39
+13. 28x19 24x13 14. 35x24 39-44 15. 22-17 ( 15. 24-19 13x24 16. 22-18
+44-49 17. 18-12 24-29 18. 12-7 49-40 19. 7-2 29-33 20. 38x29 40x41 {
+Z+ } ) 15... 21x12 16. 24-20 44-50 17. 20-15 ( 17. 27-22 50x6
+18. 20-15 16-21 19. 15-10 21-27 20. 32x21 26x17 21. 38-32 12-18
+22. 32-27 13-19 { Z+ } ) 17... 50-6 18. 15-10 12-18 19. 27-21 16x27
+20. 32x21 26x17 21. 38-32 18-22 22. 10-5 13-18 { Z+ } *
+
+[Event "Analysestanden CTG 1 2012"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "Voogd,de,D.H. (Dik)"]
+[Black "Derkx,B.W. (Boudewijn)"]
+[Result "*"]
+[GameType "20"]
+[Setup "1"]
+[FEN "B:W25,27,28,31,32,39,40,41,46,47,48:B2,13,14,15,16,17,18,19,21,23,24."]
+[PlyCount "27"]
+
+{ VAD Paas, 10-04-2004 } { Wit heeft wat problemen met een gat in het
+centrum. Doordat hij vleugels nog wel controleert kan hij zich in een
+normaal positioneel verloop wel staande houden. } 1... 23-29 (
+1... 24-29 2. 39-34 15-20 ( 2... 21-26 3. 47-42 26x37 4. 42x31 15-20
+5. 31-26 { en door de controle links staat wit zeker niet minder } )
+3. 31-26 20-24 4. 40-35 29x40 5. 35x44 { En wit heeft geen problemen
+meer } ) ( 1... 21-26 2. 47-42 ( 2. 41-37 17-21 3. 47-42 2-8 4. 48-43
+( 4. 42-38 14-20 5. 25x14 19x10 6. 28x30 18-22 7. 27x9 10-14 8. 9x20
+15x42 { Deslauriers! Z+ } ) 4... 8-12 5. 42-38 12-17 6. 46-41 17-22
+7. 28x17 21x12 8. 41-36 24-29 9. 39-34 14-20 10. 25x14 19x10
+11. 27-22 18x27 12. 31x22 { en wit blijft overeind. De schwindel }
+15-20 13. 36-31 12-18 14. 31-27 29-33 15. 38x29 20-25 16. 40-35 16-21
+17. 27x16 18x49 18. 29x9 10-14 19. 9x20 25x14 { is natuurlijk ook
+remise } ) 2... 26x37 3. 42x31 17-21 4. 48-43 ( { Als wit de ruil
+terug via 40-35 vroeg voor wil bereiden krijgt zwart groot voordeel }
+4. 41-37 24-29 5. 39-34 21-26 6. 40-35 29x40 7. 35x44 15-20 8. 44-40
+20-24 9. 48-43 24-29 10. 40-35 2-8 11. 46-41 14-20 12. 25x14 19x10
+13. 28x19 13x24 ) 4... 21-26 5. 41-37 24-29 6. 39-34 15-20 7. 34-30
+$1 20-24 8. 40-35 2-8 9. 43-38 8-12 10. 46-41 12-17 11. 41-36 { zie
+diagram } { Dit is het moment waar zwart naar toe heeft gewerkt. }
+16-21 12. 27x16 18-22 { In de partij volgde 32-27? en wit verloor.
+Remise was verrassend mogelijk via } 13. 38-33 $1 29x27 14. 37-32
+26x37 ( 14... 27x38 15. 31-27 23x21 16. 16x29 $10 ) 15. 32x12 22x33
+16. 12-7 $10 ) 2. 39-34 { * } 29-33 3. 28x39 24-30 4. 34-29 { moet
+wel vanwege de dreiging 30-35 } 30-35 5. 40-34 { En nu is het slim om
+eerst 21-26 in te lassen, met het oog op het eindspel } 21-26 (
+5... 18-22 6. 27x20 15x44 7. 25-20 19-24 8. 20x29 44-50 9. 29-24 (
+9. 31-26 50-45 { Z+ } ) 9... 50-22 10. 41-36 22-18 11. 24-20 18x45
+12. 20-14 35-40 13. 31-26 40-44 14. 14-10 { Met een goed eindspel
+voor zwart, dat toch nog wel een klus lijkt om te winnen } ) 6. 41-37
+( 6. 32-28 26x37 7. 41x32 18-22 8. 27x20 15x44 9. 25-20 19-24 (
+9... 44-49 10. 20-15 49x27 11. 15-10 27-4 12. 10-5 4-22 13. 5x23
+22x25 { lijkt remiseachtig } ) 10. 20x29 44-49 11. 29-24 49x27
+12. 24-20 27-18 ( 12... 27-9 13. 20-15 9-25 14. 28-23 25x39 15. 15-10
+35-40 16. 10-5 39-22 17. 23-19 40-44 18. 19-14 22-4 19. 48-43 { en de
+dubbele vangstelling zorgt voor een fraaie remise } ) 13. 20-14 18x45
+14. 14-10 35-40 15. 10-5 40-44 16. 28-22 17x28 17. 5x41 44-50 { met
+wederom een kingsrow eindspel (Wouter?) } ) 6... 18-22 7. 27x20 15x44
+8. 25-20 ( 8. 31-27 19-24 { Z+ } ) 8... 19-24 ( 8... 44-49 9. 32-27 (
+9. 32-28 49-44 10. 28-22 17x28 11. 20-15 28-32 12. 37x28 44x36
+13. 15-10 36-18 14. 10-5 18x45 15. 5x28 45-1 { en zwart zou dit
+makkelijk moeten kunnen winnen } ) 9... 49x21 10. 20-15 17-22
+11. 15-10 19-23 12. 48-42 21-49 13. 31-27 22x31 14. 10-4 49-43
+15. 4x36 43x25 16. 42-38 35-40 17. 36-41 40-45 18. 37-31 26x37
+19. 41x10 45-50 { Met een gewonnen? (kingsrow!) eindspel voor zwart }
+) 9. 20x29 44-49 10. 32-28 ( 10. 32-27 49x21 11. 29-24 17-22
+12. 24-20 21-12 13. 20-14 12x40 14. 14-10 40-49 { Z+ } ) 10... 17-22
+11. 28x17 49-21 12. 17-11 16x7 13. 29-24 21-3 14. 31-27 2-8 { Zwart
+laat zijn dam staan en brengt zijn schijven in stelling om op te gaan
+combineren en zal zo het eindspel proberen te winnen. } *
+
+[Event "Analysestanden CTG 1 2009"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "Zelst,van,R.R. (Remco)"]
+[Black "Ndonzi,F. (Flaubert)"]
+[Result "*"]
+[GameType "20"]
+[Setup "1"]
+[FEN "W:W31,33,34,35,36,39,49:B14,19,22,23,24,27,28."]
+[PlyCount "19"]
+
+{ Wit kan in deze stand nog vrij gemakkelijk remise afdwingen met een
+onlogische zet } 1. 49-44 ( 1. 35-30 $2 24x35 2. 33-29 35-40 3. 29x18
+22x13 4. 31x33 40x38 ) ( 1. 31-26 $2 14-20 2. 49-43 28-32 3. 43-38
+32x43 4. 39x48 20-25 5. 48-43 23-28 6. 43-39 19-23 ) ( 1. 49-43 { is
+gevaarlijk voor wit } 27-32 $1 ( 1... 14-20 $2 2. 43-38 20-25
+3. 35-30 24x35 4. 33-29 35-40 5. 29x18 40x29 6. 38-33 29x38 7. 39-34
+22x13 8. 31x42 19-24 9. 42-38 24-30 10. 36-31 30x39 11. 38-33 39x28
+12. 31-26 { met een krappe remise } ) ( 1... 28-32 $2 2. 34-29 23x34
+3. 39x30 14-20 4. 43-39 20-25 5. 39-34 22-28 6. 33x22 27x18 7. 31-26
+32-38 8. 26-21 38-42 9. 21-16 42-48 10. 16-11 48-26 11. 11-6 $10 )
+2. 31-26 14-20 3. 26-21 32-38 ( 3... 20-25 $2 4. 21-16 25-30 5. 34x25
+23-29 6. 16-11 29x49 7. 11-7 $10 ) 4. 43x32 28x37 5. 21-16 37-42
+6. 16-11 42-47 ( 6... 42-48 7. 11-7 23-29 8. 34x25 48x1 9. 35-30
+24x35 10. 25-20 $10 ) 7. 34-30 47x29 8. 11-7 22-28 9. 30-25 28-32
+10. 25x14 19x10 11. 36-31 29-45 { met een kansrijk eindspel voor
+zwart } ) 1... 14-20 ( 1... 27-32 2. 31-26 32-37 3. 36-31 28-32
+4. 31x42 32-38 5. 33-29 $10 ) 2. 35-30 { nu wel! } 24x35 3. 33-29
+28-32 4. 29x18 22x13 5. 31x22 32-38 6. 22-17 38-42 7. 17-11 42-47
+8. 11-7 20-25 9. 34-29 47x24 10. 7-1 { en zwart komt de lijn niet
+over = } *
+
+[Event "Analysestanden CTG 2 2009"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "Sjtsjogoljew,W."]
+[Black "Gantwarg,A. (Anatoli)"]
+[Result "*"]
+[GameType "20"]
+[Setup "1"]
+[FEN "B:W26,27,28,30,31,32,34,35,36,37,38,39,41,43,45:B6,8,11,12,13,14,16,17,18,19,20,21,23,24,25."]
+[PlyCount "53"]
+
+{ In deze stand kan zwart na het verplichte 23-29 op twee manieren
+slaan. Bij de juiste slagkeuze krijgt hij grote kansen, en bij de
+foutieve slagkeuze moet hij juist uiterst secuur spelen om een
+nederlaag te voorkomen. } 1... 23-29 2. 34x23 18x29 ( 2... 25x34
+3. 39x30 18x29 4. 30-25 ( 4. 28-22 17x28 5. 32x34 21x32 6. 38x27
+20-25 7. 43-38 24-29 8. 34x23 25x34 9. 35-30 34x25 10. 45-40 19x28
+11. 27-21 16x27 12. 31x33 { met een goede stand voor zwart } )
+4... 29-34 5. 43-39 34x43 6. 38x49 13-18 ( 6... 24-29 7. 45-40 { met
+een betere stand voor wit } ) 7. 45-40 18-23 8. 40-34 24-29 9. 49-43
+( 9. 34-30 20-24 10. 49-43 12-18 11. 43-38 8-13 12. 27-22 18x27
+13. 31x22 21-27 14. 32x12 23x43 15. 22-17 11x22 16. 12-7 14-20
+17. 25x34 43-48 18. 30x8 48x11 { Z+ } ) 9... 29x40 10. 35x44 20-24
+11. 43-38 24-29 12. 44-40 ( 12. 44-39 17-22 13. 27x7 11x2 14. 26x17
+29-33 15. 38x18 8-12 16. 18x7 2x44 { Z+ } ) 12... 12-18 13. 40-35
+8-13 14. 27-22 ( { Wit kan nu alleen via } 14. 35-30 { zijn stand nog
+redden. Bijvoorbeeld: } 17-22 15. 28x17 21x12 16. 38-33 29x38
+17. 32x43 23-29 18. 43-38 18-23 19. 37-32 14-20 20. 25x14 19x10
+21. 41-37 13-19 22. 38-33 29x38 23. 32x43 10-14 24. 43-39 14-20
+25. 30-25 20-24 26. 39-33 23-29 27. 37-32 29x38 28. 32x43 19-23
+29. 43-39 23-29 30. 26-21 { en wit ontsnapt } $10 ) 14... 18x27
+15. 31x22 21-27 16. 32x12 23x43 17. 22-17 11x22 18. 12-7 43-49
+19. 7-1 19-23 20. 37-31 ( 20. 1-12 49-44 21. 37-32 44-50 22. 32-27 (
+22. 12-1 50-45 ) 22... 22x31 23. 36x27 13-18 24. 12-1 50-11 )
+20... 49-44 21. 31-27 22x31 22. 36x27 13-18 ) 3. 39-34 29x40 4. 45x34
+24-29 ( 4... 13-18 5. 28-22 17x28 6. 26x17 11x22 7. 32x23 18x40
+8. 27x7 25x34 9. 35x44 { W+ } ) 5. 34x23 25x34 6. 38-33 20-25
+7. 33-29 13-18 8. 29x40 18x29 9. 43-39 29-33 10. 39-34 33x22 11. 27x7
+11x2 12. 34-29 14-20 13. 29-23 19x28 14. 32x23 8-13 15. 40-34 2-8 (
+15... 20-24 16. 34-29 24x33 17. 35-30 25x34 18. 31-27 21x32 19. 37x30
+{ W+ } ) 16. 34-29 ( 16. 37-32 20-24 17. 23-19 24-29 18. 34x23 13x24
+19. 41-37 8-13 20. 31-27 25-30 21. 23-19 24-29 22. 35x33 13x24
+23. 36-31 24-30 24. 33-29 30-35 25. 27-22 17x28 26. 26x17 35-40
+27. 32x23 40-44 { met remise } ) 16... 20-24 17. 29x20 25x14
+18. 37-32 8-12 19. 41-37 ( 19. 32-28 21-27 20. 31x11 6x17 21. 35-30
+13-18 22. 36-31 18x29 23. 41-36 12-18 24. 28-23 14-20 25. 23x21 16x27
+26. 31x22 20-25 $10 ) 19... 21-27 20. 31x11 16x7 21. 26-21 (
+21. 37-31 13-18 22. 23-19 14x23 23. 32-28 23x32 24. 31-27 32x21
+25. 26x8 7-12 26. 8x17 18-23 $10 ) 21... 6-11 22. 32-28 13-18
+23. 37-31 18x29 24. 28-22 29-33 25. 31-26 33-39 26. 21-17 12x21
+27. 26x6 39-44 $10 *
+
+[Event "Analysestanden CTG 3 2010"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "gebaseerd op oud NST-NTT materiaal"]
+[Black "?"]
+[Result "*"]
+[GameType "20"]
+[Setup "1"]
+[FEN "W:W27,28,32,33,34,35,37,38,39,43:B3,12,13,16,18,19,21,23,24,25."]
+[PlyCount "29"]
+
+{ Wit staat twee tempi achter en een mooie structuur. Toch heeft wit
+een moeilijke stand en moet naar een nuchtere remise zoeken. Het
+grote probleem is dat de stand erg diep doorgerekend moet worden om
+een sluitende remise te vinden, terwijl in vrijwel iedere variant tot
+op een laat moment nog een remise te vinden is. } 1. 34-30 ( 1. 28-22
+21-26 2. 34-30 25x34 3. 39x30 { komt op hetzelfde neer } ) 1... 25x34
+2. 39x30 23-29 ( 2... 3-9 3. 43-39 9-14 4. 30-25 $10 ) 3. 37-31 (
+3. 43-39 29-34 4. 30-25 34x43 5. 38x49 18-23 ( 5... 3-9 6. 49-44 9-14
+7. 35-30 24x35 8. 33-29 12-17 9. 44-39 $10 ) 6. 28-22 ( 6. 49-43
+23-29 7. 43-38 29-34 8. 28-22 ( 8. 37-31 13-18 9. 31-26 12-17 { Z+ }
+) 8... 21-26 9. 32-28 3-9 10. 38-32 12-18 11. 37-31 26x37 12. 32x41
+24-30 13. 35x24 19x30 { Z+ } ) 6... 21-26 7. 49-43 12-17 8. 22x11
+16x7 9. 33-28 3-9 10. 43-39 9-14 11. 27-22 7-11 12. 39-33 11-16
+13. 22-17 16-21 14. 17-12 21-27 15. 32x21 26x8 16. 25-20 23x41
+17. 20x18 $10 ) ( 3. 28-22 21-26 4. 32-28 { 'dreigt' met 28-23 } (
+4. 33-28 $2 18-23 5. 30-25 29-34 6. 38-33 23-29 7. 43-38 3-8 8. 37-31
+26x37 9. 32x41 34-39 10. 33x44 29-34 { Z+ } ) 4... 18-23 5. 37-32 3-9
+6. 30-25 29-34 7. 33-29 24x42 8. 43-38 42x33 9. 28x30 $10 )
+3... 21-26 ( 3... 12-17 4. 31-26 3-9 5. 30-25 29-34 6. 43-39 34x43
+7. 38x49 18-22 8. 27x18 13x22 9. 33-29 $10 ) 4. 30-25 26x37 5. 32x41
+29-34 6. 41-37 12-17 7. 37-32 17-21 8. 28-22 ( 8. 43-39 34x43
+9. 38x49 18-23 10. 49-43 3-9 11. 27-22 21-26 12. 43-39 23-29
+13. 22-17 29x27 14. 17-12 { met remisekansen } ) 8... 3-9 9. 43-39
+34x43 10. 38x49 18-23 11. 32-28 21x32 12. 28x37 16-21 13. 37-31 21-27
+14. 22-17 27x36 15. 17-11 { met een eindspel met een schijf meer,
+maar alles staat op het midden van het bord } *
+
+[Event "Analysestanden CTG 3 2010"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "Gebaseerd op LOI-cursus uit oud nst/ntt mat."]
+[Black "?"]
+[Result "*"]
+[GameType "20"]
+[Setup "1"]
+[FEN "W:W27,28,32,33,35,37,38,39,40,45:B3,13,14,16,18,19,21,23,24,26."]
+[PlyCount "10"]
+
+{ In deze stand kan zwart na 40-34 of 39-34 verrassend snel remise
+forceren } 1. 40-34 ( 1. 39-34 { Zwart kan verrassend remise pakken
+via } 24-29 ( 1... 14-20 2. 34-30 { nu is de remise moeilijker te
+vinden, maar hij zit er nog wel in } 20-25 3. 40-34 3-9 4. 28-22
+24-29 $1 ( 4... 9-14 { Na een normaal verloop krijgt zwart grote
+problemen. Een voorbeeld: } 5. 33-28 24-29 6. 45-40 14-20 7. 30-24
+19x39 8. 28x8 29-33 9. 38x29 39-43 10. 22x13 43-48 11. 37-31 26x28
+12. 8-2 21x32 13. 29-24 20x29 14. 40-34 48x8 15. 2x27 28-33 16. 27-43
+) 5. 33x24 9-14 { Nu forceert zwart direct de remise via de dreiging
+23-28 dus moet } 6. 24-20 23-28 7. 32x12 21x43 8. 20x18 26-31 $1 (
+8... 43-48 $2 9. 12-7 48x31 10. 18-12 31x40 { W+ } ) 9. 37x26 43-48 {
+en ondanks vier schijven meer moet wit in remise berusten } )
+2. 33x24 19x39 3. 28x10 18-22 4. 27x9 3x5 $10 ) 1... 3-9 { De
+simpelste zet! } ( 1... 14-20 { komt overeen met de eerder genoemde
+variant na 20-25 39-34 } ) 2. 34-30 18-22 3. 27x20 14x43 4. 38x49
+21-27 5. 32x21 16x27 *
+
+[Event "Analysestanden CTG 5 2010"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "studiestand KVO"]
+[Black "?"]
+[Result "*"]
+[GameType "20"]
+[Setup "1"]
+[FEN "W:W26,27,32,33,34,35,36,37,41,45:B6,7,8,14,16,17,18,21,23,24."]
+[PlyCount "13"]
+
+1. 45-40 $3 ( 1. 32-28 23x32 2. 27x38 8-13 3. 34-29 18-22 4. 29x27
+21x43 $10 ) ( 1. 36-31 7-12 $1 ( 1... 14-19 $2 2. 45-40 7-11 (
+2... 8-13 3. 34-30 23-29 4. 32-28 21x23 5. 41-36 29x38 6. 37-32 38x27
+7. 31x2 { W+ } ) 3. 41-36 8-13 4. 34-30 23-29 5. 33-28 17-22 6. 26x17
+22x33 7. 17-12 18x7 8. 32-28 33x22 9. 27x9 { W+ } ) 2. 33-28 24-30
+3. 28x10 30x39 4. 10-5 39-44 $10 ) ( 1. 34-30 14-19 { en zwart gaat
+ontsnappen met 23-29 } ) 1... 7-11 ( 1... 8-13 { WAT KOMT ER NA DEZE?
+} ) 2. 36-31 14-19 ( 2... 14-20 3. 41-36 8-13 4. 34-30 13-19 5. 30-25
+{ W+ } ) ( 2... 8-13 3. 34-30 13-19 ) 3. 34-30 23-29 4. 32-28 21x23
+5. 41-36 29x38 6. 37-32 38x27 7. 31x2 { W+ } *
+
+[Event "?"]
+[Site "?"]
+[Date "?"]
+[Round "?"]
+[White "Test"]
+[Black "Test 2"]
+[Result "*"]
+[GameType "20"]
+[PlyCount "42"]
+
+1. 34-29 19-23 2. 39-34 14-19 3. 44-39 10-14 4. 50-44 5-10 5. 32-28
+23x32 6. 37x28 17-22 7. 28x17 11x22 8. 38-32 12-17 9. 43-38 19-23
+10. 35-30 20-25 11. 30-24 14-19 12. 40-35 19x30 13. 35x24 13-19
+14. 24x13 8x19 15. 41-37 10-14 16. 48-43 15-20 17. 46-41 4-10
+18. 31-26 25-30 19. 34x25 23x34 20. 39x30 22-27 21. 32x23 19x50 *
+			
+[Event "Valencia"]
+[Site "Valencia"]
+[Date "1475.??.??"]
+[EventDate "1475.??.??"]
+[Round "?"]
+[Result "1-0"]
+[White "Francesco di Castellvi"]
+[Black "Narciso Vinyoles"]
+[ECO "B01"]
+[WhiteElo "?"]
+[BlackElo "?"]
+[PlyCount "41"]
+
+1. e4 {This game may be the oldest recorded game of chess.} d5
+2. exd5 Qxd5 3. Nc3 Qd8 4. Bc4 Nf6 5. Nf3 Bg4 6. h3 Bxf3
+7. Qxf3 e6 8. Qxb7 Nbd7 9. Nb5 Rc8 10. Nxa7 Nb6 11. Nxc8 Nxc8
+12. d4 Nd6 13. Bb5+ Nxb5 14. Qxb5+ Nd7 15. d5 exd5 16. Be3 Bd6
+17. Rd1 Qf6 18. Rxd5 Qg6 19. Bf4 Bxf4 20. Qxd7+ Kf8 21. Qd8#
+1-0
+				</pre>
+		    </div>
+
+
+        
+        </section>
+        <aside id="sidebar">
+        	<div id="jocly-pjn-white">White: <span class="strong"></span></div>
+        	<div id="jocly-pjn-black">Black: <span class="strong"></span></div>
+        	<div id="jocly-pjn-when">When: <span class="strong"></span></div>
+        	<br/>
+			<div id="jocly-pjn" data-jocly-pjn></div>
+        	<p><i>Click on the moves above to update the board</i></p>
+        	<p><button id="toggleNavigation">Toggle navigation</button></p>
+        	<p><button id="toggleHistory">Toggle history</button></p>
+        	<p><button id="toggleControls">Toggle controls</button></p>
+        	<p><button id="toggleToolbar">Toggle toolbar</button></p>
+        </aside>
+
+      </div>
+    </div>
+
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-1041911-15");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
