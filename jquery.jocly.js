@@ -172,9 +172,9 @@ if (!jQuery) {
 			data: spec,
 		});
 	}
-	Applet.prototype.localplay = function(gameName,spec) {
+	Applet.prototype.localPlay = function(gameName,spec) {
 		this.sendMessage({
-			type: "localplay",
+			type: "localPlay",
 			gameName: gameName,
 			data: spec || {},
 		});
