@@ -17,7 +17,7 @@
 		console.log("create applet");
 		this.jqElm = jqElm;
 		this.ready = false;
-		this.gotoMessage = null;
+		this.queuedMessages = [];
 	}
 	Applet.prototype.init = function(options) {
 		console.log("init", options)
@@ -68,15 +68,14 @@
 		this.init(options);
 	}
 	Applet.prototype.messageListener = function(message) {
-		console.log("Received message",message);
+		//console.log("Received message",message);
 		switch(message.type) {
 		case 'ready':
 			this.ready=true;
-			console.log("gotoMessage",this.gotoMessage)
-			if(this.gotoMessage) {
-				this.sendMessage(this.gotoMessage);
-				this.gotoMessage=null;
-			}
+			this.queuedMessages.forEach(function(message) {
+				this.sendMessage(message);
+			},this);
+			this.queuedMessages=[];
 			break;
 		case 'display':
 			var crc=$.joclyCRC32(message.initial);
@@ -92,18 +91,23 @@
 		}
 	}
 	Applet.prototype.sendMessage = function(message) {
-		console.log("sendMessage",message);
-		this.iframe[0].contentWindow.postMessage(message,joclyBaseURL);
+		//console.log("sendMessage",message);
+		if(this.ready)
+			this.iframe[0].contentWindow.postMessage(message,joclyBaseURL);
+		else
+			this.queuedMessages.push(message);
 	}
 	Applet.prototype.goto = function(spec) {
-		var message={
+		this.sendMessage({
 			type: "import",
 			data: spec,
-		};
-		if(this.ready)
-			this.sendMessage(message);
-		else
-			this.gotoMessage=message;
+		});
+	}
+	Applet.prototype.setFeatures = function(features) {
+		this.sendMessage({
+			type: "features",
+			features: features,		
+		});
 	}
 	
 	$.fn.jocly = function() {

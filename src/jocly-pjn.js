@@ -17,13 +17,11 @@
 	}
 
 	function PJN(jqElm) {
-		console.log("create PJN");
 		this.jqElm = jqElm;
 		this.ajaxReq = null;
 		this.applets = $();
 	}
 	PJN.prototype.init = function(options) {
-		console.log("init", options)
 		var $this=this;
 		this.options = {
 			defaultGame: 'classic-chess',
@@ -42,6 +40,7 @@
 			},
 			varClasses: ['jocly-pjn-variation-1','jocly-pjn-variation-2','jocly-pjn-variation-3'],
 			commentsInitialVisible: true,
+			onParsedGame: function() {},
 		}
 		if (options)
 			$.extend(true,this.options, options);
@@ -56,6 +55,9 @@
 		else if(this.options.dataUrl)
 			this.loadRemote(this.options.dataUrl);
 	}
+	PJN.prototype.setOptions = function(options) {
+		$.extend(true,this.options,options);
+	}
 	PJN.prototype.remove = function() {
 		this.jqElm.empty();
 		this.jqElm.html(this.content);
@@ -63,7 +65,6 @@
 		$(document).unbind("jocly.display",this.listener);
 	}
 	PJN.prototype.update = function(options) {
-		console.log("update", arguments);
 		this.remove();
 		this.init(options);
 	}
@@ -96,14 +97,12 @@
 		});
 	}
 	PJN.prototype.parse = function(data) {
-		console.log("PJN data:",data);
 		var $this=this;
 		this.pjnData = data;
 		this.jqElm.html(this.options.strings.parsingPJN);
 
 		this.games=[];
 		PJNParser.parse(data,function(game) {
-			console.log("parsed game",game);
 			$this.games.push(game);
 		},function() {
 			$this.jqElm.empty();
@@ -122,7 +121,6 @@
 		},0);
 	}
 	PJN.prototype.buildChoice = function() {
-		console.log("buildChoice",this.games);
 		var $this=this;
 		//this.jqElm.find("select.jocly-pjn-selector").remove();
 		var select=$("<select/>").addClass("jocly-pjn-selector");
@@ -152,15 +150,13 @@
 
 	PJN.prototype.parseGame = function(data,callback) {
 		var $this=this;
-		console.log("parsing",data);
 		PJNParser.parse(data,function(game) {
-			console.log("parsed",game);
 			$this.game={
 				tags: game.tags,
 				root: game.rootNode,
 			}
+			$this.options.onParsedGame(game);
 		},function() {
-			console.log("done parsing")
 			$this.updateGameTree();
 			$this.display();
 			if(callback)
@@ -349,11 +345,10 @@
 	}
 	
 	PJN.prototype.highlightMove = function(message) {
-		console.log("Highlight",message);
 		this.jqElm.find(".jocly-pjn-move").removeClass("jocly-pjn-current-move jocly-pjn-pending-move");
 		this.jqElm.find(".jocly-pjn-move[jocly-pjn-crc='"+message.crc+"']").addClass("jocly-pjn-current-move");
 	}
-	
+
 	$.fn.joclyPJN = function() {
 		var $arguments = arguments;
 		this.each(function() {
@@ -384,7 +379,6 @@
 					pjn[method].apply(pjn, Array.prototype.splice
 							.call($arguments, 1));
 				}
-				console.log("pjn", pjn);
 			});
 		return this;
 	};

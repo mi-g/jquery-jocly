@@ -1,11 +1,12 @@
 
 %{
 
-	console.log("PJNParser");
+	//console.log("PJNParser");
 
 	var SuperParse=parser.parse;
 	parser.parse=function(input,callback,complete,error,lineNo) {
-		console.log("parser",input);
+		//console.log("parser",input);
+		input+="\n"; // dirty way to fix a problem when the game ends on the last character
 		parser.lexer.options.ranges=true;
 		var yy=parser.yy;
 		yy.tags={};
@@ -27,7 +28,7 @@
 	}
 
 	function SaveGame(yy) { 			
-
+		//console.warn("SaveGame");
 		if(yy.rootNode.next && yy.compiledGame) 
 			yy.compiledGame({
 				offset: yy.startOffset,

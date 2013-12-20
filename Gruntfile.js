@@ -2,7 +2,7 @@
 module.exports = function(grunt) {
 	
 	var jsSourceFiles = [ 'src/jocly-check-jquery.js', 'src/jocly-crc32.js', 'src/jocly-applet.js', 'src/jocly-pjn.js'];
-	var pjnFiles = ['src/PJNParser.prefix.js','PJNParser.js','src/PJNParser.suffix.js']
+	var parserFiles = ['src/PJNParser.prefix.js','PJNParser.js','src/PJNParser.suffix.js']
 
 	grunt.initConfig({
 		pkg : grunt.file.readJSON('package.json'),
@@ -27,7 +27,7 @@ module.exports = function(grunt) {
 		uglify : {
 			target : {
 				files : {
-					'jquery.jocly.min.js' : jsSourceFiles.concat(['PJNParser.js'])
+					'jquery.jocly.min.js' : jsSourceFiles.concat(['parser-files.js'])
 				}
 			}
 		},
@@ -56,13 +56,17 @@ module.exports = function(grunt) {
 				}
 			}
 		},
-		clean: ["PJNParser.js"],
+		clean: ["PJNParser.js","parser-files.js"],
 		concat: {
 			options: {
 				separator: ';',
 			},
+			target: {
+				src: parserFiles,
+				dest: 'parser-files.js',
+			},
 			debug: {
-				src: jsSourceFiles.concat(pjnFiles),
+				src: jsSourceFiles.concat(parserFiles),
 				dest: 'jquery.jocly.js',
 			},
 		},
@@ -82,5 +86,5 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-jison');
 
 	grunt.registerTask('debug',['jshint','jison','concat','copy']);
-	grunt.registerTask('default',['jshint','jison','uglify','cssmin','clean']);
+	grunt.registerTask('default',['jshint','jison','concat','uglify','cssmin','clean']);
 };
