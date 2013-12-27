@@ -393,41 +393,41 @@
 			});
 		return this;
 	};
-	
-}(jQuery));
 
-$(document).ready(function() {
+	$(document).ready(function() {
 
-	$("[data-jocly-pjn]").each(function() {
-		var $this=$(this);
-		$this.jocly();
-		if(this.hasAttribute("data-jocly-pjn-init")) {
-			var attr=$this.attr("data-jocly-pjn-init");
-			if(attr.length===0)
-				return;
-			try {
-				var arr=JSON.parse(attr);
+		$("[data-jocly-pjn]").each(function() {
+			var $this=$(this);
+			$this.jocly();
+			if(this.hasAttribute("data-jocly-pjn-init")) {
+				var attr=$this.attr("data-jocly-pjn-init");
+				if(attr.length===0)
+					return;
 				try {
-					if(!Array.isArray(arr)) {
-						console.warn("jquery.jocly: data-jocly-pjn-init attribute is not an array");				
-					}
-					for(var i=0;i<arr.length;i++) {
-						var element=arr[i];
-						if(Array.isArray(element))
-							$this.jocly.apply($this,element);						
-						else {
-							$this.jocly.apply($this,arr);
-							return;
+					var arr=JSON.parse(attr);
+					try {
+						if(!Array.isArray(arr)) {
+							console.warn("jquery.jocly: data-jocly-pjn-init attribute is not an array");				
 						}
+						for(var i=0;i<arr.length;i++) {
+							var element=arr[i];
+							if(Array.isArray(element))
+								$this.jocly.apply($this,element);						
+							else {
+								$this.jocly.apply($this,arr);
+								return;
+							}
+						}
+					} catch(e) {
+						console.warn("jquery.jocly: data-jocly-pjn-init error:",e);					
 					}
 				} catch(e) {
-					console.warn("jquery.jocly: data-jocly-pjn-init error:",e);					
+					console.warn("jquery.jocly: data-jocly-pjn-init attribute has no JSON valid value");
 				}
-			} catch(e) {
-				console.warn("jquery.jocly: data-jocly-pjn-init attribute has no JSON valid value");
 			}
-		}
+		});
+
 	});
 
-});
+}(jQuery));
 
