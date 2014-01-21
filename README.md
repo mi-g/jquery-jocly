@@ -98,7 +98,7 @@ If you don't know whether the usage you intend to make of those plugins is consi
 API
 ---
 
-Both jQuery plugins, *jocly* and *joclyPJN*, use the same calling convention:
+The jQuery plugins, *jocly*, *joclyPJN* and *joclyListener use the same calling convention:
 
 The widget is created with `jQuerySelector.jocly(options)`, for instance, `$("#jocly-applet").jocly()` or `$("#jocly-pjn").joclyPJN({commentsInitialVisible:false})`.
 Note that the *options* parameter can be ommited if you are happy with the default. After the initialisation, methods are called using
@@ -114,8 +114,8 @@ If you want to call several methods at init, you can group them with an enclosin
 
 Constructor options:
 
-- **width**: the width of the applet, e.g. *400* or *'100%'*
-- **height**: the height of the applet
+- **ratio**: the height/width ratio, default is 1.0
+- **maxWidth**: the maximum number of pixels horizontally, default is 1000
 
 Methods:
 
@@ -136,6 +136,7 @@ Constructor options:
 - **commentsInitialVisible**: whether the comments are displayed or collapsed by default (*boolean*)
 - **onParsedGame**: a function to be called when a game is parsed. This is useful to make use of the game meta-tags elsewhere in the page. 
 This callback receives a game object, holding a *tags* field as a map.
+- **navigation**: enable navigating the moves (clicking a move update the game being played in the attached applet), default is true. 
 
 Methods:
 - **remove**: removes the widget from the page gracefully
@@ -147,6 +148,18 @@ otherwise, a drop-down selector is displayed to pick a particular game
 - **attachApplet**: tell the widget which applet to work with
 	* **applet**: a jQuery selector containing the applet (initied with the *jocly* plugin)
 
+### joclyListener
+
+Receives messages from the applets.
+
+No constructor option.
+
+Methods:
+- **listen(msgType,handler)**: installs a listener for the given message type. The handler is called with the message as only parameter.
+
+Supported message types:
+- **display**: called whenever the applet display a new position
+- **move**: called whenever a move is played in the applet
 
 
  
