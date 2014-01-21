@@ -29,7 +29,10 @@
 
 	function SaveGame(yy) { 			
 		//console.warn("SaveGame");
-		if(yy.rootNode.next && yy.compiledGame) 
+		var tagsCount=0;
+		for(var tag in yy.tags)
+			tagsCount++;
+		if((yy.rootNode.next || tagsCount>0) && yy.compiledGame) 
 			yy.compiledGame({
 				offset: yy.startOffset,
 				length: yy.lexer.yylloc.range[1]-yy.startOffset,
