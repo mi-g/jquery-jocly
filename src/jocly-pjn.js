@@ -41,6 +41,7 @@
 			varClasses: ['jocly-pjn-variation-1','jocly-pjn-variation-2','jocly-pjn-variation-3'],
 			commentsInitialVisible: true,
 			onParsedGame: function() {},
+			navigation: true,
 		}
 		if (options)
 			$.extend(true,this.options, options);
@@ -54,7 +55,8 @@
 				break;
 			}
 		}
-		$(document).bind("jocly",this.listener);
+		this.jqElm.addClass("jocly-listener");
+		this.jqElm.bind("jocly",this.listener);
 		this.content = this.jqElm.html();
 		this.jqElm.empty();
 		if(this.options.data)
@@ -69,7 +71,8 @@
 		this.jqElm.empty();
 		this.jqElm.html(this.content);
 		this.jqElm.data("jocly-pjn", null);
-		$(document).unbind("jocly",this.listener);
+		this.jqElm.unbind("jocly",this.listener);
+		this.jqElm.removeClass("jocly-listener");
 	}
 	PJN.prototype.update = function(options) {
 		this.remove();
@@ -235,10 +238,11 @@
 	PJN.prototype.makeNodesDOM = function(node,level,crc,prev,prevPrev) {
 		var $this=this;
 		function SetMoveClickHandler(elm,node) {
-			elm.on("click",function() {
-				$(this).addClass("jocly-pjn-pending-move");
-				$this.gotoNode(node);				
-			});
+			if($this.options.navigation)
+				elm.on("click",function() {
+					$(this).addClass("jocly-pjn-pending-move");
+					$this.gotoNode(node);				
+				});
 		}
 		var start=true;
 		var elm=$("<span/>").addClass("jocly-pjn-moves");
@@ -376,14 +380,15 @@
 									.error("Jocly pjn: invalid data-jocly-pjn "
 											+ dataAttr);
 						}
+					else if($arguments.length > 0 && typeof $arguments[0] == "object")
+						options = $arguments[0];
 					pjn.init(options);
 					$(this).data("jocly-pjn", pjn);
 				}
 				if ($arguments.length > 0) {
 					var method = $arguments[0];
 					if (typeof method != "string")
-						throw new Error(
-								"Jocly pjn: first argument must be a string specifying the method to be called");
+						return;
 					if (typeof pjn[method] != "function")
 						throw new Error("Jocly pjn: no such method '"
 								+ method + "'");
