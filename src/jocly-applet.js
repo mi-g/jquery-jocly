@@ -21,9 +21,11 @@
 	Applet.prototype.init = function(options) {
 		var $this=this;
 		this.options = {
-			width : '100%',
-			height : 450,
+			//width : '100%',
+			//height : 450,
 			mode : "splash",
+			maxWidth: 1000,
+			ratio: 1,
 		}
 		if (options)
 			$.extend(this.options, options);
@@ -41,11 +43,46 @@
 		window.addEventListener("message",this.listener,false);
 		var iframeName = "jocly-iframe-" + this.iframeId;
 		this.iframe = $("<iframe/>").attr("name", iframeName).attr(
-				"frameborder", 0).attr("width", this.options.width).attr(
-				"height", this.options.height).attr("src", "about:blank");
+				"frameborder", 0).attr("src", "about:blank");
 		this.content = this.jqElm.html();
 		this.jqElm.empty();
-		this.iframe.appendTo(this.jqElm);
+		
+		var canvas=$("<canvas/>").attr("width",this.options.maxWidth).attr("height",this.options.maxWidth*this.options.ratio);
+		var image=new Image();
+		image.src = canvas[0].toDataURL("image/png");
+		
+		this.wrapper=$("<div/>").css({
+			position: "relative",
+			"white-space": "nowrap",
+		}).appendTo(this.jqElm);
+		
+		this.wrapper.append($(image).css({
+			width: "auto",
+			height: "auto",
+			"max-width": "100%",
+			"max-height": "100%",
+			"vertical-align": "bottom",
+		}));
+
+		this.iframe.attr("width","100%").attr("height","100%").css({
+			position: "absolute",
+			top: 0,
+			right: 0,
+			bottom: 0,
+			left: 0,
+			"white-space": "normal",
+		}).appendTo(
+			$("<div/>").css("padding-top",this.options.ratio*100+"%").appendTo(
+				$("<div/>").css({
+					position: "absolute",
+					top: 0,
+					bottom: 0,
+					left: 0,
+					right: 0,
+				}).appendTo(this.wrapper)
+			)
+		);
+		
 		var initForm = $("<form/>").attr("action", iframeUrl).attr("method",
 				"post").attr("target", iframeName);
 		$("<input/>").attr("type", "hidden").attr("name", "data").attr("value",
@@ -81,15 +118,17 @@
 					message.moves.forEach(function(move) {
 						crc=$.joclyCRC32(move.str,crc);
 					});
-				$(document).trigger('jocly',{
+				$(".jocly-listener").trigger('jocly',{
 					type: 'display',
 					crc: crc,
 				});
 			} else
-				$(document).trigger('jocly',{
+				$(".jocly-listener").trigger('jocly',{
 					type: 'undisplay',
 				});
 			break;
+		default:
+			$(".jocly-listener").trigger('jocly',message);			
 		}
 	}
 	Applet.prototype.sendMessage = function(message) {
@@ -118,9 +157,13 @@
 			features: features,		
 		});
 	}
+	Applet.prototype.getId = function() {
+		return this.iframeId;
+	}
 	
 	$.fn.jocly = function() {
 		var $arguments = arguments;
+		var retVal = this;
 		this.each(function() {
 			var applet = $(this).data("jocly-applet");
 			if (!applet) {
@@ -146,11 +189,13 @@
 				if (typeof applet[method] != "function")
 					throw new Error("Jocly applet: no such method '"
 							+ method + "'");
-				applet[method].apply(applet, Array.prototype.splice
+				var retVal0 = applet[method].apply(applet, Array.prototype.splice
 						.call($arguments, 1));
+				if(retVal0 !== undefined)
+					console.log("method",method,"returns",retVal0)
 			}
 		});
-		return this;
+		return retVal;
 	};
 
 	$(document).ready(function() {
