@@ -166,9 +166,11 @@
 		var retVal = this;
 		this.each(function() {
 			var applet = $(this).data("jocly-applet");
+			var justCreated=false;
 			if (!applet) {
 				applet = new Applet($(this));
-				var options = null;
+				justCreated=true;
+				var options = $arguments[0] || null;
 				var dataAttr = $(this).attr("data-jocly");
 				if (dataAttr)
 					try {
@@ -183,6 +185,8 @@
 			}
 			if ($arguments.length > 0) {
 				var method = $arguments[0];
+				if(justCreated && typeof method == "object")
+					return;
 				if (typeof method != "string")
 					throw new Error(
 							"Jocly applet: first argument must be a string specifying the method to be called");
