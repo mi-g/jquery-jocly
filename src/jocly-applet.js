@@ -10,7 +10,6 @@
 
 (function($) {
 	
-	var joclyBaseURL="http://embed.jocly.net";
 	var iframeIdRef = 1;
 
 	function Applet(jqElm) {
@@ -26,17 +25,18 @@
 			mode : "splash",
 			maxWidth: 1000,
 			ratio: 1,
+			baseURL: "http://embed.jocly.net",
 		}
 		if (options)
 			$.extend(this.options, options);
-		var iframeUrl = joclyBaseURL+"/jocly/plazza/embed";
+		var iframeUrl = this.options.baseURL+"/jocly/plazza/embed";
 		if(this.options.game)
 			iframeUrl+="/"+this.options.game;
 		iframeUrl+="?mode=" + this.options.mode;
 		this.iframeId = iframeIdRef++;
 		this.options.jei = this.iframeId;
 		this.listener=function(event) {
-			if(event.origin!=joclyBaseURL || event.data.jei!=$this.iframeId)
+			if(event.origin!=$this.options.baseURL || event.data.jei!=$this.iframeId)
 				return;
 			$this.messageListener(event.data);
 		}
@@ -133,7 +133,7 @@
 	}
 	Applet.prototype.sendMessage = function(message) {
 		if(this.ready)
-			this.iframe[0].contentWindow.postMessage(message,joclyBaseURL);
+			this.iframe[0].contentWindow.postMessage(message,this.options.baseURL);
 		else
 			this.queuedMessages.push(message);
 	}
