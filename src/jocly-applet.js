@@ -160,6 +160,12 @@
 	Applet.prototype.getId = function() {
 		return this.iframeId;
 	}
+	Applet.prototype.emptyBoard = function(gameName) {
+		this.sendMessage({
+			type: "emptyBoard",
+			gameName: gameName,
+		});
+	}
 	
 	$.fn.jocly = function() {
 		var $arguments = arguments;
