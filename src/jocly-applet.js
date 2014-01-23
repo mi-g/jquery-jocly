@@ -166,6 +166,12 @@
 			gameName: gameName,
 		});
 	}
+	Applet.prototype.viewOptions = function(options) {
+		this.sendMessage({
+			type: "viewOptions",
+			options: options,
+		});
+	}
 	
 	$.fn.jocly = function() {
 		var $arguments = arguments;
