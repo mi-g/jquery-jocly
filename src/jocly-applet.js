@@ -26,6 +26,7 @@
 			maxWidth: 1000,
 			ratio: 1,
 			baseURL: "http://embed.jocly.net",
+			masked: false,
 		}
 		if (options)
 			$.extend(this.options, options);
@@ -63,6 +64,16 @@
 			"max-height": "100%",
 			"vertical-align": "bottom",
 		}));
+				
+		this.container=$("<div/>").css("padding-top",this.options.ratio*100+"%").appendTo(
+			$("<div/>").css({
+				position: "absolute",
+				top: 0,
+				bottom: 0,
+				left: 0,
+				right: 0,
+			}).appendTo(this.wrapper)
+		);
 
 		this.iframe.attr("width","100%").attr("height","100%").css({
 			position: "absolute",
@@ -71,17 +82,19 @@
 			bottom: 0,
 			left: 0,
 			"white-space": "normal",
-		}).appendTo(
-			$("<div/>").css("padding-top",this.options.ratio*100+"%").appendTo(
-				$("<div/>").css({
-					position: "absolute",
-					top: 0,
-					bottom: 0,
-					left: 0,
-					right: 0,
-				}).appendTo(this.wrapper)
-			)
-		);
+		}).appendTo(this.container);
+		
+		this.maskElm=$("<div/>").css({
+			display: this.options.masked?"block":"none",
+			position: "absolute",
+			top: 0,
+			right: 0,
+			width: "100%",
+			height: "100%",
+			'background-color': 'rgba(0,0,0,.8)',
+			"z-index": 1,
+		}).appendTo(this.wrapper);
+
 		
 		var initForm = $("<form/>").attr("action", iframeUrl).attr("method",
 				"post").attr("target", iframeName);
@@ -171,6 +184,12 @@
 			type: "viewOptions",
 			options: options,
 		});
+	}
+	Applet.prototype.mask = function(masked) {
+		if(masked)
+			this.maskElm.show();
+		else
+			this.maskElm.hide();
 	}
 	
 	$.fn.jocly = function() {
