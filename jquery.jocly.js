@@ -264,7 +264,6 @@ if (!jQuery) {
 			var applet = $(this).data("jocly-applet");
 			var justCreated=false;
 			if (!applet) {
-				console.log("create applet")
 				applet = new Applet($(this));
 				justCreated=true;
 				var options = $arguments[0] || null;
