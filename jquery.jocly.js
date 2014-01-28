@@ -76,7 +76,6 @@ if (!jQuery) {
 
 (function($) {
 	
-	var joclyBaseURL="http://embed.jocly.net";
 	var iframeIdRef = 1;
 
 	function Applet(jqElm) {
@@ -92,17 +91,19 @@ if (!jQuery) {
 			mode : "splash",
 			maxWidth: 1000,
 			ratio: 1,
+			baseURL: "http://embed.jocly.net",
+			masked: false,
 		}
 		if (options)
 			$.extend(this.options, options);
-		var iframeUrl = joclyBaseURL+"/jocly/plazza/embed";
+		var iframeUrl = this.options.baseURL+"/jocly/plazza/embed";
 		if(this.options.game)
 			iframeUrl+="/"+this.options.game;
 		iframeUrl+="?mode=" + this.options.mode;
 		this.iframeId = iframeIdRef++;
 		this.options.jei = this.iframeId;
 		this.listener=function(event) {
-			if(event.origin!=joclyBaseURL || event.data.jei!=$this.iframeId)
+			if(event.origin!=$this.options.baseURL || event.data.jei!=$this.iframeId)
 				return;
 			$this.messageListener(event.data);
 		}
@@ -129,6 +130,16 @@ if (!jQuery) {
 			"max-height": "100%",
 			"vertical-align": "bottom",
 		}));
+				
+		this.container=$("<div/>").css("padding-top",this.options.ratio*100+"%").appendTo(
+			$("<div/>").css({
+				position: "absolute",
+				top: 0,
+				bottom: 0,
+				left: 0,
+				right: 0,
+			}).appendTo(this.wrapper)
+		);
 
 		this.iframe.attr("width","100%").attr("height","100%").css({
 			position: "absolute",
@@ -137,18 +148,19 @@ if (!jQuery) {
 			bottom: 0,
 			left: 0,
 			"white-space": "normal",
-		}).appendTo(
-			$("<div/>").css("padding-top",this.options.ratio*100+"%").appendTo(
-				$("<div/>").css({
-					position: "absolute",
-					top: 0,
-					bottom: 0,
-					left: 0,
-					right: 0,
-				}).appendTo(this.wrapper)
-			)
-		);
+		}).appendTo(this.container);
 		
+		this.maskElm=$("<div/>").css({
+			display: this.options.masked?"block":"none",
+			position: "absolute",
+			top: 0,
+			right: 0,
+			width: "100%",
+			height: "100%",
+			'background-color': 'rgba(0,0,0,.8)',
+			"z-index": 1,
+		}).appendTo(this.wrapper);
+
 		var initForm = $("<form/>").attr("action", iframeUrl).attr("method",
 				"post").attr("target", iframeName);
 		$("<input/>").attr("type", "hidden").attr("name", "data").attr("value",
@@ -199,7 +211,7 @@ if (!jQuery) {
 	}
 	Applet.prototype.sendMessage = function(message) {
 		if(this.ready)
-			this.iframe[0].contentWindow.postMessage(message,joclyBaseURL);
+			this.iframe[0].contentWindow.postMessage(message,this.options.baseURL);
 		else
 			this.queuedMessages.push(message);
 	}
@@ -226,15 +238,36 @@ if (!jQuery) {
 	Applet.prototype.getId = function() {
 		return this.iframeId;
 	}
+	Applet.prototype.emptyBoard = function(gameName) {
+		this.sendMessage({
+			type: "emptyBoard",
+			gameName: gameName,
+		});
+	}
+	Applet.prototype.viewOptions = function(options) {
+		this.sendMessage({
+			type: "viewOptions",
+			options: options,
+		});
+	}
+	Applet.prototype.mask = function(masked) {
+		if(masked)
+			this.maskElm.show();
+		else
+			this.maskElm.hide();
+	}
 	
 	$.fn.jocly = function() {
 		var $arguments = arguments;
 		var retVal = this;
 		this.each(function() {
 			var applet = $(this).data("jocly-applet");
+			var justCreated=false;
 			if (!applet) {
+				console.log("create applet")
 				applet = new Applet($(this));
-				var options = null;
+				justCreated=true;
+				var options = $arguments[0] || null;
 				var dataAttr = $(this).attr("data-jocly");
 				if (dataAttr)
 					try {
@@ -249,6 +282,8 @@ if (!jQuery) {
 			}
 			if ($arguments.length > 0) {
 				var method = $arguments[0];
+				if(justCreated && typeof method == "object")
+					return;
 				if (typeof method != "string")
 					throw new Error(
 							"Jocly applet: first argument must be a string specifying the method to be called");
@@ -764,7 +799,6 @@ if (!jQuery) {
 			$.extend(this.options, options);
 		this.listeners={};
 		this.jqElm.bind("jocly",function(event,data) {
-			console.log("Received",data);
 			var handlers=$this.listeners[data.type];
 			if(handlers)
 				handlers.forEach(function(handler) {
