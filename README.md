@@ -3,7 +3,7 @@ Jocly jQuery plugin
 ===================
 
 
-*jocly-embed* is a set of jQuery plugins for embedding Jocly games into any web site.
+*jquery.jocly* is a set of jQuery plugins for embedding Jocly games into any web site.
 
 Jocly (http://jocly.com/) is a HTML5 board games platform for 2-players abstract strategy games like Chess or Checkers.
 The Jocly web site allows playing against the computer, reviewing/analyzing played games and playing against other players. 
@@ -12,6 +12,10 @@ Most games display the board in 3D when WebGL is enabled on the user's device/pl
 The *jquery.jocly* plugin embeds the main features of Jocly so games can be integrated into a web site with minimum effort.
 
 Check a few demos: http://mi-g.github.io/jquery-jocly/index.html
+Also this chess puzzle site: http://chesschal.com/
+
+*jquery.jocly* is still in active development and many more features are still to be implemented. If you plan to use the plugin
+in a project, please let us know so we can help: support at jocly dot com.
 
 Using jquery.jocly
 ------------------
@@ -128,6 +132,14 @@ Methods:
 	    * *hasHistory*: the list of played moves on the right (*boolean*)
 	    * *hasControls*: a toolbar at the bottom with control buttons (*boolean*)
 	    * *hasToolbar*: the bottom-most toolbar with player names (*boolean*)
+- **viewOptions**: modify the applet view options.
+	+ **options**: 
+		* *skin*: the skin name (*string*)
+		* *notation*: whether the notation should be displayed on the board (*boolean*)
+		* *moves*: whether possible moves should be highlighted (*boolean*)
+		* *sounds*: whether sounds should be played (*boolean*)
+- **mask**: displays/hide a semi-opaque mask over the applet.
+	+ **haveMask**: whether the mask should be displayed (*boolean*)
 	    
 ### joclyPJN plugin
 
