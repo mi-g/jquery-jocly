@@ -95,7 +95,6 @@
 			"z-index": 1,
 		}).appendTo(this.wrapper);
 
-		
 		var initForm = $("<form/>").attr("action", iframeUrl).attr("method",
 				"post").attr("target", iframeName);
 		$("<input/>").attr("type", "hidden").attr("name", "data").attr("value",

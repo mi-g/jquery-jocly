@@ -22,7 +22,6 @@
 			$.extend(this.options, options);
 		this.listeners={};
 		this.jqElm.bind("jocly",function(event,data) {
-			console.log("Received",data);
 			var handlers=$this.listeners[data.type];
 			if(handlers)
 				handlers.forEach(function(handler) {
