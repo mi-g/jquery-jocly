@@ -190,6 +190,13 @@
 		else
 			this.maskElm.hide();
 	}
+	Applet.prototype.camera = function(camera,delay) {
+		this.sendMessage({
+			type: "camera",
+			camera: camera,
+			delay: delay,
+		});
+	}
 	
 	$.fn.jocly = function() {
 		var $arguments = arguments;
