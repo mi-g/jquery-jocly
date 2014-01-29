@@ -180,6 +180,7 @@ if (!jQuery) {
 		this.init(options);
 	}
 	Applet.prototype.messageListener = function(message) {
+		var callback;
 		console.log("jocly-applet received message from iframe",message);
 		switch(message.type) {
 		case 'ready':
@@ -204,6 +205,24 @@ if (!jQuery) {
 				$(".jocly-listener").trigger('jocly',{
 					type: 'undisplay',
 				});
+			break;
+		case 'snapshot':
+			callback=this.snapshotCallbacks[message.snapshotId];
+			delete this.snapshotCallbacks[message.snapshotId];
+			if(message.image) {
+				var image=new Image();
+				image.onload=function() {
+					console.log("image",image.width,"x",image.height)
+					callback(image);					
+				}
+				image.src=message.image;
+			} else
+				callback(null);
+			break;
+		case 'camera':
+			callback=this.cameraCallbacks[message.cameraId];
+			delete this.cameraCallbacks[message.cameraId];
+			callback(message.camera);					
 			break;
 		default:
 			$(".jocly-listener").trigger('jocly',message);			
@@ -255,6 +274,35 @@ if (!jQuery) {
 			this.maskElm.show();
 		else
 			this.maskElm.hide();
+	}
+	Applet.prototype.updateCamera = function(camera,delay) {
+		this.sendMessage({
+			type: "updateCamera",
+			camera: camera,
+			delay: delay,
+		});
+	}
+	Applet.prototype.snapshotCallbacks={};
+	Applet.prototype.snapshot = function(callback) {
+		var snapshotId=1;
+		while(snapshotId in this.snapshotCallbacks)
+			snapshotId++;
+		this.snapshotCallbacks[snapshotId]=callback;
+		this.sendMessage({
+			type: "snapshot",
+			snapshotId: snapshotId,
+		});
+	}
+	Applet.prototype.cameraCallbacks={};
+	Applet.prototype.getCamera = function(callback) {
+		var cameraId=1;
+		while(cameraId in this.cameraCallbacks)
+			cameraId++;
+		this.cameraCallbacks[cameraId]=callback;
+		this.sendMessage({
+			type: "getCamera",
+			cameraId: cameraId,
+		});
 	}
 	
 	$.fn.jocly = function() {
