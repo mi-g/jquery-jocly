@@ -114,6 +114,7 @@
 		this.init(options);
 	}
 	Applet.prototype.messageListener = function(message) {
+		var callback;
 		console.log("jocly-applet received message from iframe",message);
 		switch(message.type) {
 		case 'ready':
@@ -140,7 +141,7 @@
 				});
 			break;
 		case 'snapshot':
-			var callback=this.snapshotCallbacks[message.snapshotId];
+			callback=this.snapshotCallbacks[message.snapshotId];
 			delete this.snapshotCallbacks[message.snapshotId];
 			if(message.image) {
 				var image=new Image();
@@ -151,6 +152,11 @@
 				image.src=message.image;
 			} else
 				callback(null);
+			break;
+		case 'camera':
+			callback=this.cameraCallbacks[message.cameraId];
+			delete this.cameraCallbacks[message.cameraId];
+			callback(message.camera);					
 			break;
 		default:
 			$(".jocly-listener").trigger('jocly',message);			
@@ -219,6 +225,17 @@
 		this.sendMessage({
 			type: "snapshot",
 			snapshotId: snapshotId,
+		});
+	}
+	Applet.prototype.cameraCallbacks={};
+	Applet.prototype.getCamera = function(callback) {
+		var cameraId=1;
+		while(cameraId in this.cameraCallbacks)
+			cameraId++;
+		this.cameraCallbacks[cameraId]=callback;
+		this.sendMessage({
+			type: "getCamera",
+			cameraId: cameraId,
 		});
 	}
 	
