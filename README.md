@@ -139,6 +139,19 @@ Methods:
 		* *sounds*: whether sounds should be played (*boolean*)
 - **mask**: displays/hide a semi-opaque mask over the applet.
 	+ **haveMask**: whether the mask should be displayed (*boolean*)
+- **updateCamera**: modify the position of the camera and/or the target (the point the camera is looking at).
+This feature only works when the applet displays a 3D skin.
+    + **camera**
+        * *x*: X position of the camera
+        * *y*: Y position of the camera
+        * *z*: Z position of the camera
+        * *targetX*: X position of the target
+        * *targetY*: Y position of the target
+        * *targetZ*: Z position of the target
+- **getCamera**: get the current position of the camera and the target (3D skin only).
+	+ **callback**: callback function receiving the camera object as parameter, as described in *updateCamera*
+- **snapshot**: take a snapshot of the camera (3D skin only)
+    + **callback**: callback function receiving an Image object as parameter, or null if failure (not a 3D skin)
 	    
 ### joclyPJN plugin
 
