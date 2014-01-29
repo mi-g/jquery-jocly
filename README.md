@@ -11,8 +11,7 @@ Most games display the board in 3D when WebGL is enabled on the user's device/pl
 
 The *jquery.jocly* plugin embeds the main features of Jocly so games can be integrated into a web site with minimum effort.
 
-Check a few demos: http://mi-g.github.io/jquery-jocly/index.html
-Also this chess puzzle site: http://chesschal.com/
+Check a few demos: http://mi-g.github.io/jquery-jocly/index.html, also this chess puzzle site: http://chesschal.com/
 
 *jquery.jocly* is still in active development and many more features are still to be implemented. If you plan to use the plugin
 in a project, please let us know so we can help: support at jocly dot com.
