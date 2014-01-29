@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+	<link rel="stylesheet" href="jquery.jocly.min.css">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script src="jquery.jocly.min.js"></script>
+    <title>Jquery-jocly by mi-g</title>
+    <style>
+    	aside {
+    		overflow: hidden;
+    		padding: 1em;
+    	}
+    	aside > div {
+    		display: inline-block;
+    		padding-left: 1em;
+    		text-align: center;
+    		float: right;
+    		width: 100%;
+    	}
+    	button {
+    		display: block;
+    		width: 100%;
+    		margin-bottom: 1em;
+    	}
+    	#snapshot div {
+    		width: 100%;
+    		height: 200px;
+    		background-repeat: no-repeat;
+    		background-size: contain;
+    		background-position: center center;
+    	}
+    </style>
+    <script>
+$(document).ready(function() {
+	$("#applet").jocly({});
+	$("#applet").jocly("localPlay","classic-chess",{ self: true });
+	$("#applet").jocly("setFeatures",{
+		notifyEnd: false,
+		hasEndSound: false,		
+	});
+	$("#take-snapshot").on("click",function() {
+		$("#applet").jocly("snapshot",function(image) {
+			if(image) {
+				$("#snapshot").show();
+				$("#snapshot div").css("background-image","url("+image.src+")");
+				$("#download").attr("href",image.src);	
+			} else
+				alert("Cannot take a snapshot. Are you using a 3D skin ?");
+		});
+	});
+	$("#applet").joclyListener("listen","display",function() {
+		$("#applet").jocly("viewOptions",{moves:false});
+	});
+});
+    </script>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Jquery-jocly</h1>
+        <h2>A jQuery plugin to integrate easily board games into a web site</h2>
+        <a href="https://github.com/mi-g/jquery-jocly" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+        
+        	<a href="index.html">Home</a>
+
+        	<h1>Snapshot demo</h1>
+        	
+        	<div id="applet"></div>
+        
+        </section>
+        <aside>
+        	<div>
+        		<button id="take-snapshot">Take snapshot</button>
+        		<div id="snapshot" style="display: none;">
+        			<div></div>
+	        		<a id="download" download="jocly-snapshot.png">Download</a>    			
+        		</div>
+        	</div>
+        </aside>
+
+      </div>
+    </div>
+
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-1041911-15");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
