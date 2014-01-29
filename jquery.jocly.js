@@ -87,9 +87,11 @@ if (!jQuery) {
 	Applet.prototype.init = function(options) {
 		var $this=this;
 		this.options = {
-			width : '100%',
-			height : 450,
+			//width : '100%',
+			//height : 450,
 			mode : "splash",
+			maxWidth: 1000,
+			ratio: 1,
 		}
 		if (options)
 			$.extend(this.options, options);
@@ -107,11 +109,46 @@ if (!jQuery) {
 		window.addEventListener("message",this.listener,false);
 		var iframeName = "jocly-iframe-" + this.iframeId;
 		this.iframe = $("<iframe/>").attr("name", iframeName).attr(
-				"frameborder", 0).attr("width", this.options.width).attr(
-				"height", this.options.height).attr("src", "about:blank");
+				"frameborder", 0).attr("src", "about:blank");
 		this.content = this.jqElm.html();
 		this.jqElm.empty();
-		this.iframe.appendTo(this.jqElm);
+		
+		var canvas=$("<canvas/>").attr("width",this.options.maxWidth).attr("height",this.options.maxWidth*this.options.ratio);
+		var image=new Image();
+		image.src = canvas[0].toDataURL("image/png");
+		
+		this.wrapper=$("<div/>").css({
+			position: "relative",
+			"white-space": "nowrap",
+		}).appendTo(this.jqElm);
+		
+		this.wrapper.append($(image).css({
+			width: "auto",
+			height: "auto",
+			"max-width": "100%",
+			"max-height": "100%",
+			"vertical-align": "bottom",
+		}));
+
+		this.iframe.attr("width","100%").attr("height","100%").css({
+			position: "absolute",
+			top: 0,
+			right: 0,
+			bottom: 0,
+			left: 0,
+			"white-space": "normal",
+		}).appendTo(
+			$("<div/>").css("padding-top",this.options.ratio*100+"%").appendTo(
+				$("<div/>").css({
+					position: "absolute",
+					top: 0,
+					bottom: 0,
+					left: 0,
+					right: 0,
+				}).appendTo(this.wrapper)
+			)
+		);
+		
 		var initForm = $("<form/>").attr("action", iframeUrl).attr("method",
 				"post").attr("target", iframeName);
 		$("<input/>").attr("type", "hidden").attr("name", "data").attr("value",
@@ -147,15 +184,17 @@ if (!jQuery) {
 					message.moves.forEach(function(move) {
 						crc=$.joclyCRC32(move.str,crc);
 					});
-				$(document).trigger('jocly',{
+				$(".jocly-listener").trigger('jocly',{
 					type: 'display',
 					crc: crc,
 				});
 			} else
-				$(document).trigger('jocly',{
+				$(".jocly-listener").trigger('jocly',{
 					type: 'undisplay',
 				});
 			break;
+		default:
+			$(".jocly-listener").trigger('jocly',message);			
 		}
 	}
 	Applet.prototype.sendMessage = function(message) {
@@ -184,9 +223,13 @@ if (!jQuery) {
 			features: features,		
 		});
 	}
+	Applet.prototype.getId = function() {
+		return this.iframeId;
+	}
 	
 	$.fn.jocly = function() {
 		var $arguments = arguments;
+		var retVal = this;
 		this.each(function() {
 			var applet = $(this).data("jocly-applet");
 			if (!applet) {
@@ -212,11 +255,13 @@ if (!jQuery) {
 				if (typeof applet[method] != "function")
 					throw new Error("Jocly applet: no such method '"
 							+ method + "'");
-				applet[method].apply(applet, Array.prototype.splice
+				var retVal0 = applet[method].apply(applet, Array.prototype.splice
 						.call($arguments, 1));
+				if(retVal0 !== undefined)
+					console.log("method",method,"returns",retVal0)
 			}
 		});
-		return this;
+		return retVal;
 	};
 
 	$(document).ready(function() {
@@ -300,6 +345,7 @@ if (!jQuery) {
 			varClasses: ['jocly-pjn-variation-1','jocly-pjn-variation-2','jocly-pjn-variation-3'],
 			commentsInitialVisible: true,
 			onParsedGame: function() {},
+			navigation: true,
 		}
 		if (options)
 			$.extend(true,this.options, options);
@@ -313,7 +359,8 @@ if (!jQuery) {
 				break;
 			}
 		}
-		$(document).bind("jocly",this.listener);
+		this.jqElm.addClass("jocly-listener");
+		this.jqElm.bind("jocly",this.listener);
 		this.content = this.jqElm.html();
 		this.jqElm.empty();
 		if(this.options.data)
@@ -328,7 +375,8 @@ if (!jQuery) {
 		this.jqElm.empty();
 		this.jqElm.html(this.content);
 		this.jqElm.data("jocly-pjn", null);
-		$(document).unbind("jocly",this.listener);
+		this.jqElm.unbind("jocly",this.listener);
+		this.jqElm.removeClass("jocly-listener");
 	}
 	PJN.prototype.update = function(options) {
 		this.remove();
@@ -494,10 +542,11 @@ if (!jQuery) {
 	PJN.prototype.makeNodesDOM = function(node,level,crc,prev,prevPrev) {
 		var $this=this;
 		function SetMoveClickHandler(elm,node) {
-			elm.on("click",function() {
-				$(this).addClass("jocly-pjn-pending-move");
-				$this.gotoNode(node);				
-			});
+			if($this.options.navigation)
+				elm.on("click",function() {
+					$(this).addClass("jocly-pjn-pending-move");
+					$this.gotoNode(node);				
+				});
 		}
 		var start=true;
 		var elm=$("<span/>").addClass("jocly-pjn-moves");
@@ -635,14 +684,15 @@ if (!jQuery) {
 									.error("Jocly pjn: invalid data-jocly-pjn "
 											+ dataAttr);
 						}
+					else if($arguments.length > 0 && typeof $arguments[0] == "object")
+						options = $arguments[0];
 					pjn.init(options);
 					$(this).data("jocly-pjn", pjn);
 				}
 				if ($arguments.length > 0) {
 					var method = $arguments[0];
 					if (typeof method != "string")
-						throw new Error(
-								"Jocly pjn: first argument must be a string specifying the method to be called");
+						return;
 					if (typeof pjn[method] != "function")
 						throw new Error("Jocly pjn: no such method '"
 								+ method + "'");
@@ -1006,7 +1056,10 @@ parse: function parse(input) {
 
 	function SaveGame(yy) { 			
 		//console.warn("SaveGame");
-		if(yy.rootNode.next && yy.compiledGame) 
+		var tagsCount=0;
+		for(var tag in yy.tags)
+			tagsCount++;
+		if((yy.rootNode.next || tagsCount>0) && yy.compiledGame) 
 			yy.compiledGame({
 				offset: yy.startOffset,
 				length: yy.lexer.yylloc.range[1]-yy.startOffset,
