@@ -139,6 +139,19 @@
 					type: 'undisplay',
 				});
 			break;
+		case 'snapshot':
+			var callback=this.snapshotCallbacks[message.snapshotId];
+			delete this.snapshotCallbacks[message.snapshotId];
+			if(message.image) {
+				var image=new Image();
+				image.onload=function() {
+					console.log("image",image.width,"x",image.height)
+					callback(image);					
+				}
+				image.src=message.image;
+			} else
+				callback(null);
+			break;
 		default:
 			$(".jocly-listener").trigger('jocly',message);			
 		}
@@ -195,6 +208,17 @@
 			type: "camera",
 			camera: camera,
 			delay: delay,
+		});
+	}
+	Applet.prototype.snapshotCallbacks={};
+	Applet.prototype.snapshot = function(callback) {
+		var snapshotId=1;
+		while(snapshotId in this.snapshotCallbacks)
+			snapshotId++;
+		this.snapshotCallbacks[snapshotId]=callback;
+		this.sendMessage({
+			type: "snapshot",
+			snapshotId: snapshotId,
 		});
 	}
 	
