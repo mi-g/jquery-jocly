@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+	<link rel="stylesheet" href="jquery.jocly.min.css">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script src="jquery.jocly.min.js"></script>
+    <title>Jquery-jocly by mi-g</title>
+    <style>
+    	aside > div {
+    		display: inline-block;
+    		padding-left: 1em;
+    		text-align: center;
+    	}
+    	button {
+    		display: block;
+    		width: 100%;
+    		margin-bottom: 1em;
+    	}
+    	#camera {
+    		text-align: left;
+    	}
+    </style>
+    <script>
+$(document).ready(function() {
+	$("#applet").jocly({});
+	$("#applet").jocly("localPlay","classic-chess",{ self: true });
+	$("#applet").jocly("setFeatures",{
+		notifyEnd: false,
+		hasEndSound: false,		
+	});
+	$("#view1").on("click",function() {
+		$("#applet").jocly("updateCamera",{
+			x: 0,
+			y: 0,
+			z: 15000,
+			targetX: 0,
+			targetY: 0,
+			targetZ: 0,
+		});
+	});
+	$("#view2").on("click",function() {
+		$("#applet").jocly("updateCamera",{
+			x: 0,
+			y: 8000,
+			z: 3000,
+			targetX: 0,
+			targetY: 0,
+			targetZ: 0,
+		});
+	});
+	$("#view3").on("click",function() {
+		$("#applet").jocly("updateCamera",{
+			x: -8000,
+			y: 10000,
+			z: 3000,
+			targetX: -4000,
+			targetY: 6000,
+			targetZ: 0,
+			debug: true,
+		});
+	});
+	$("#animate1").on("click",function() {
+		$("#applet").jocly("updateCamera",{
+			x: 0,
+			y: 0,
+			z: 15000,
+			targetX: 0,
+			targetY: 0,
+			targetZ: 0,
+		},3000);
+	});
+	$("#animate2").on("click",function() {
+		$("#applet").jocly("updateCamera",{
+			x: 0,
+			y: 8000,
+			z: 3000,
+			targetX: 0,
+			targetY: 0,
+			targetZ: 0,
+		},3000);
+	});
+	$("#animate3").on("click",function() {
+		$("#applet").jocly("updateCamera",{
+			x: -8000,
+			y: 10000,
+			z: 3000,
+			targetX: -4000,
+			targetY: 6000,
+			targetZ: 0,
+		},3000);
+	});
+	$("#get-camera").on("click",function() {
+		$("#applet").jocly("getCamera",function(camera) {
+			var html="";
+			for(var prop in camera)
+				html+=prop+": "+Math.round(camera[prop])+"<br/>";
+			$("#camera").html(html);
+		});
+		
+	});
+});
+    </script>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Jquery-jocly</h1>
+        <h2>A jQuery plugin to integrate easily board games into a web site</h2>
+        <a href="https://github.com/mi-g/jquery-jocly" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+        
+        	<a href="index.html">Home</a>
+
+        	<h1>Camera Control demo</h1>
+        	
+        	<div id="applet"></div>
+        
+        </section>
+        <aside>
+        	<div>
+        	<button id="view1">View 1</button>
+        	<button id="view2">View 2</button>
+        	<button id="view3">View 3</button>
+        	<button id="animate1">Animate to view 1</button>
+        	<button id="animate2">Animate to view 2</button>
+        	<button id="animate3">Animate to view 3</button>
+        	<button id="get-camera">Get camera</button>
+        	<div id="camera"></div>
+        	</div>
+        </aside>
+
+      </div>
+    </div>
+
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-1041911-15");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
