@@ -1,7 +1,8 @@
 
 module.exports = function(grunt) {
 	
-	var jsSourceFiles = [ 'src/jocly-check-jquery.js', 'src/jocly-crc32.js', 'src/jocly-applet.js', 'src/jocly-pjn.js', 'src/jocly-listener.js'];
+	var jsSourceFiles = [ 'src/jocly-check-jquery.js', 'src/jocly-crc32.js', 'src/jocly-applet.js', 'src/jocly-pjn.js', 
+                          'src/jocly-listener.js', 'src/jocly-fullscreen.js'];
 	var parserFiles = ['src/PJNParser.prefix.js','PJNParser.js','src/PJNParser.suffix.js']
 
 	grunt.initConfig({

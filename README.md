@@ -163,6 +163,7 @@ This callback receives a game object, holding a *tags* field as a map.
 - **navigation**: enable navigating the moves (clicking a move update the game being played in the attached applet), default is true. 
 
 Methods:
+
 - **remove**: removes the widget from the page gracefully
 - **load**: loads a PJN document. If there is only one game in the document (and the widget has attached an applet), it is sent to the applet automatically.
 otherwise, a drop-down selector is displayed to pick a particular game
@@ -182,8 +183,21 @@ Methods:
 - **listen(msgType,handler)**: installs a listener for the given message type. The handler is called with the message as only parameter.
 
 Supported message types:
+
 - **display**: called whenever the applet display a new position
 - **move**: called whenever a move is played in the applet
+
+### joclyFullscreen
+
+Utility to switch the applet to fullscreen mode.
+
+Usage: *applet.joclyFullscreen()*
+
+Example:
+
+	$("#fullscreen-button").on("click",function() {
+    	$("#jocly-applet").joclyFullscreen();
+    });
 
 
  
