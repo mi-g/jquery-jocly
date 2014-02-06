@@ -160,6 +160,11 @@ if (!jQuery) {
 			'background-color': 'rgba(0,0,0,.8)',
 			"z-index": 1,
 		}).appendTo(this.wrapper);
+		
+		$("script[type='text/jocly-model-view']").each(function() {
+			console.log("model-view",$(this).attr("id"));
+			$this.defineGame($(this).attr("id"),$(this).text());
+		});
 
 		var initForm = $("<form/>").attr("action", iframeUrl).attr("method",
 				"post").attr("target", iframeName);
@@ -303,6 +308,20 @@ if (!jQuery) {
 			type: "getCamera",
 			cameraId: cameraId,
 		});
+	}
+
+	Applet.prototype.defineGame = function(id,jsonSpecs) {
+		try {
+			JSON.parse(jsonSpecs);
+			this.sendMessage({
+				type: 'defineGame',
+				id: id,
+				jsonSpecs: jsonSpecs,
+				url: document.URL,
+			});
+		} catch(e) {
+			console.warn("Cannot parse game specs",id,e);
+		}
 	}
 	
 	$.fn.jocly = function() {
