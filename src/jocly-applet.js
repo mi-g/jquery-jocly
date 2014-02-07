@@ -96,8 +96,13 @@
 		}).appendTo(this.wrapper);
 		
 		$("script[type='text/jocly-model-view']").each(function() {
-			console.log("model-view",$(this).attr("id"));
-			$this.defineGame($(this).attr("id"),$(this).text());
+			console.log("model-view",$(this).attr("data-jocly-game"));
+			$this.defineGame($(this).attr("data-jocly-game"),$(this).text());
+		});
+
+		$("script[type='text/jocly-resources']").each(function() {
+			console.log("resources",$(this).attr("data-jocly-game"));
+			$this.defineResources($(this).attr("data-jocly-game"),$(this).text());
 		});
 
 		var initForm = $("<form/>").attr("action", iframeUrl).attr("method",
@@ -119,7 +124,8 @@
 		this.init(options);
 	}
 	Applet.prototype.messageListener = function(message) {
-		var callback;
+		var $this=this;
+		var callback,image;
 		console.log("jocly-applet received message from iframe",message);
 		switch(message.type) {
 		case 'ready':
@@ -149,7 +155,7 @@
 			callback=this.snapshotCallbacks[message.snapshotId];
 			delete this.snapshotCallbacks[message.snapshotId];
 			if(message.image) {
-				var image=new Image();
+				image=new Image();
 				image.onload=function() {
 					console.log("image",image.width,"x",image.height)
 					callback(image);					
@@ -162,6 +168,44 @@
 			callback=this.cameraCallbacks[message.cameraId];
 			delete this.cameraCallbacks[message.cameraId];
 			callback(message.camera);					
+			break;
+		case 'requestData':
+			if(message.dataType=="text")
+				$.ajax({
+					url: message.url,
+					dataType: "html",
+					success: function(data) {
+						$this.sendMessage({
+							type: "responseData",
+							data: data,
+							callbackId: message.callbackId,
+						});
+					},
+					error: function() {
+						$this.sendMessage({
+							type: "responseData",
+							data: null,
+							callbackId: message.callbackId,
+						});
+					}
+				});
+			else if(message.dataType=="image") {
+				image=new Image();
+				image.onload=function() {
+					var canvas = document.createElement("canvas");
+					canvas.width = image.width;
+					canvas.height = image.height;
+					var ctx = canvas.getContext("2d");
+					ctx.drawImage(image, 0, 0);
+					var dataURL = canvas.toDataURL(/\.jpe?g$/.test(message.url)?"image/jpeg":"image/png");
+					$this.sendMessage({
+						type: "responseData",
+						data: dataURL,
+						callbackId: message.callbackId,
+					});
+				}
+				image.src=message.url;
+			}
 			break;
 		default:
 			$(".jocly-listener").trigger('jocly',message);			
@@ -255,6 +299,20 @@
 			});
 		} catch(e) {
 			console.warn("Cannot parse game specs",id,e);
+		}
+	}
+	
+	Applet.prototype.defineResources = function(id,jsonSpecs) {
+		try {
+			JSON.parse(jsonSpecs);
+			this.sendMessage({
+				type: 'defineResources',
+				id: id,
+				jsonSpecs: jsonSpecs,
+				url: document.URL,
+			});
+		} catch(e) {
+			console.warn("Cannot parse resources specs",id,e);
 		}
 	}
 	
