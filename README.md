@@ -152,6 +152,25 @@ This feature only works when the applet displays a 3D skin.
 	+ **callback**: callback function receiving the camera object as parameter, as described in *updateCamera*
 - **snapshot**: take a snapshot of the camera (3D skin only)
     + **callback**: callback function receiving an Image object as parameter, or null if failure (not a 3D skin)
+- **defineGame**: define model and view for a game.
+	+ **gameName**: the game's machine name
+	+ **specs**: an object with *model* and *view* fields. The exact definition of the model and view objects are tricky. It is convenient
+to copy an existing model/view structure from *http://embed.jocly.com/jocly/plazza/**gameName**/model-view.js* and modify it.
+- **defineResources**: define/refine resources for a game's view.
+	+ **gameName**: the game's machine name
+	+ **specs**: an object where keys are the resource name and value the URL to be used. The URLs must be on the same domain as the hosting page. 
+For instance: *
+	{
+		"smoothedfilegeo|0|res/xd-view/meshes/classic/queen/queen.js": "assets/king.js",
+		"image|res/xd-view/meshes/classic/queen/queen-diffusemap.jpg": "assets/king-diffusemap.jpg",
+		"image|res/xd-view/meshes/classic/queen/queen-normalmap.jpg": "assets/king-normalmap.jpg"
+	}*.
+A resource can also a javascript file to be loaded as part of the model or the view: *
+	{
+		"myvariant-model.js": "my-variant-files/my-model.js", 
+		"myvariant-view.js": "my-variant-files/my-view.js"
+	}* 
+
 	    
 ### joclyPJN plugin
 
