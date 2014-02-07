@@ -96,13 +96,21 @@
 		}).appendTo(this.wrapper);
 		
 		$("script[type='text/jocly-model-view']").each(function() {
-			console.log("model-view",$(this).attr("data-jocly-game"));
-			$this.defineGame($(this).attr("data-jocly-game"),$(this).text());
+			try {
+				var specs=JSON.parse($(this).text());
+				$this.defineGame($(this).attr("data-jocly-game"),specs);
+			} catch(e) {
+				console.warn("Cannot parse game specs",e);
+			}
 		});
 
 		$("script[type='text/jocly-resources']").each(function() {
-			console.log("resources",$(this).attr("data-jocly-game"));
-			$this.defineResources($(this).attr("data-jocly-game"),$(this).text());
+			try {
+				var specs=JSON.parse($(this).text());
+				$this.defineResources($(this).attr("data-jocly-game"),specs);
+			} catch(e) {
+				console.warn("Cannot parse resources specs",id,e);
+			}
 		});
 
 		var initForm = $("<form/>").attr("action", iframeUrl).attr("method",
@@ -288,32 +296,22 @@
 		});
 	}
 
-	Applet.prototype.defineGame = function(id,jsonSpecs) {
-		try {
-			JSON.parse(jsonSpecs);
-			this.sendMessage({
-				type: 'defineGame',
-				id: id,
-				jsonSpecs: jsonSpecs,
-				url: document.URL,
-			});
-		} catch(e) {
-			console.warn("Cannot parse game specs",id,e);
-		}
+	Applet.prototype.defineGame = function(id,specs) {
+		this.sendMessage({
+			type: 'defineGame',
+			id: id,
+			jsonSpecs: JSON.stringify(specs),
+			url: document.URL,
+		});
 	}
 	
-	Applet.prototype.defineResources = function(id,jsonSpecs) {
-		try {
-			JSON.parse(jsonSpecs);
-			this.sendMessage({
-				type: 'defineResources',
-				id: id,
-				jsonSpecs: jsonSpecs,
-				url: document.URL,
-			});
-		} catch(e) {
-			console.warn("Cannot parse resources specs",id,e);
-		}
+	Applet.prototype.defineResources = function(id,specs) {
+		this.sendMessage({
+			type: 'defineResources',
+			id: id,
+			jsonSpecs: JSON.stringify(specs),
+			url: document.URL,
+		});
 	}
 	
 	$.fn.jocly = function() {
