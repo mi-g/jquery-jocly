@@ -17,6 +17,26 @@
 	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 	<script src="jquery.jocly.min.js"></script>
     <title>Jquery-jocly by mi-g</title>
+    
+    <script type="text/jocly-model-view" data-jocly-game="western/custom-chess">
+{
+	"model": {
+		"name": "custom-chess",
+        "js": ["variant-model.js", "western-model.js","cannon-as-rook-model.js"]
+	},	
+    "view": {
+        "model": "custom-chess"
+	}
+}
+	</script>
+    
+    <script type="text/jocly-resources" data-jocly-game="custom-chess">
+{
+	"cannon-as-rook-model.js": "rules/cannon-as-rook-model.js"
+}
+	</script>
+
+    
   </head>
 
   <body>
@@ -32,32 +52,17 @@
       <div class="inner clearfix">
         <section id="main-content">
         
-        	<h2>Demos</h2>
+        	<a href="index.html">Home</a>
+
+        	<h1>Custom variant demo</h1>
         	
-        	<ul>
-        	<li><a href="simple-hvsc.html">Simple applet demo</a></li>
-        	<li><a href="view-pjn.html">PJN view demo</a></li>
-        	<li><a href="view-pjn2.html">Multiple PJN view demo</a></li>
-        	<li><a href="view-options.html">View options demo</a></li>
-        	<li><a href="camera-control.html">Camera control demo</a></li>
-        	<li><a href="snapshot.html">Snapshot demo</a></li>
-        	<li><a href="custom-res.html">Custom resources demo</a></li>
-        	<li><a href="custom-var.html">Custom variant demo</a></li>
-        	</ul>
+        	<h2>This demo shows a hosting-page-defined variant where the rook behavior has been replaced by whose of a 
+        		<a href="http://en.wikipedia.org/wiki/Xiangqi#Cannon" target="_blank">XiangQi cannon</a>.</h2>
+        	
+        	<div data-jocly data-jocly-init='["localPlay","custom-chess"]'></div>
         
         </section>
 
-        <aside id="sidebar">
-          <a href="https://github.com/mi-g/jquery-jocly/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/mi-g/jquery-jocly/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
-
-        </aside>
       </div>
     </div>
 
