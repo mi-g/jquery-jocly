@@ -153,6 +153,7 @@
 				$(".jocly-listener").trigger('jocly',{
 					type: 'display',
 					crc: crc,
+					boardState: message.boardState,
 				});
 			} else
 				$(".jocly-listener").trigger('jocly',{
