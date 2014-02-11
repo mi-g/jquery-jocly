@@ -153,7 +153,9 @@ This feature only works when the applet displays a 3D skin.
 - **snapshot**: take a snapshot of the camera (3D skin only)
     + **callback**: callback function receiving an Image object as parameter, or null if failure (not a 3D skin)
 - **defineGame**: define model and view for a game.
-	+ **gameName**: the game's machine name
+	+ **gameName**: the game's machine name. If the game name contains a slash as in "base-game/new-game", the model/view specification
+is a copy of the existing base game extended by the *specs* parameter given as second parameter. This avoids copying the entire model/view configuration in
+order to make only a few changes. 
 	+ **specs**: an object with *model* and *view* fields. The exact definition of the model and view objects are tricky. It is convenient
 to copy an existing model/view structure from *http://embed.jocly.com/jocly/plazza/**gameName**/model-view.js* and modify it.
 - **defineResources**: define/refine resources for a game's view.
