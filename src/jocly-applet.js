@@ -134,7 +134,7 @@
 	Applet.prototype.messageListener = function(message) {
 		var $this=this;
 		var callback,image;
-		console.log("jocly-applet received message from iframe",message);
+		console.log("jocly-applet received",message.type,"message from iframe",message);
 		switch(message.type) {
 		case 'ready':
 			this.ready=true;
