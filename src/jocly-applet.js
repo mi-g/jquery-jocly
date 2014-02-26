@@ -315,6 +315,13 @@
 		});
 	}
 	
+	Applet.prototype.setPlayers = function(players) {
+		this.sendMessage({
+			type: 'setPlayers',
+			players: players,
+		});
+	}
+	
 	$.fn.jocly = function() {
 		var $arguments = arguments;
 		var retVal = this;
