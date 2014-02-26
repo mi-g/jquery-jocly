@@ -40,6 +40,9 @@
     			$("#options-moves").hide();
     			if(message.options.moves!==undefined)
     				$("#options-moves").show().children("input").prop("checked",message.options.moves);
+    			$("#options-autocomplete").hide();
+    			if(message.options.autocomplete!==undefined)
+    				$("#options-autocomplete").show().children("input").prop("checked",message.options.autocomplete);
     			$("#options-sounds").hide();
     			if(message.options.sounds!==undefined)
     				$("#options-sounds").show().children("input").prop("checked",message.options.sounds);
@@ -53,6 +56,8 @@
     				options.notation=$("#options-notation-input").prop("checked");
     			if($("#options-moves").is(":visible"))
     				options.moves=$("#options-moves-input").prop("checked");
+    			if($("#options-autocomplete").is(":visible"))
+    				options.autocomplete=$("#options-autocomplete-input").prop("checked");
     			if($("#options-sounds").is(":visible"))
     				options.sounds=$("#options-sounds-input").prop("checked");
     			$("#applet").jocly("viewOptions",options);
@@ -89,6 +94,9 @@
         		</label>
         		<label id="options-moves" for="options-moves-input">
         			<input id="options-moves-input" type="checkbox"/> Show possible moves<br/>
+        		</label>
+        		<label id="options-autocomplete" for="options-autocomplete-input">
+        			<input id="options-autocomplete-input" type="checkbox"/> Auto-complete moves<br/>
         		</label>
         		<label id="options-sounds" for="options-sounds-input">
         			<input id="options-sounds-input" type="checkbox"/> Sounds<br/>
