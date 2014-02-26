@@ -322,6 +322,18 @@
 		});
 	}
 	
+	Applet.prototype.restartGame = function() {
+		this.sendMessage({
+			type: 'restartGame',
+		});
+	}
+	
+	Applet.prototype.takeBack = function() {
+		this.sendMessage({
+			type: 'takeBack',
+		});
+	}
+	
 	$.fn.jocly = function() {
 		var $arguments = arguments;
 		var retVal = this;
