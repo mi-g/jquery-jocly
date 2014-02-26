@@ -123,6 +123,9 @@
     		$("#takeback").on("click",function() {
     			$("#applet").jocly("takeBack");    			
     		});
+        	$("#fullscreen").on("click",function() {
+        		$("#applet").joclyFullscreen();
+        	});
     	});
     </script>
   </head>
@@ -166,6 +169,7 @@
         		<label id="level-b" for="select-level-b">Computer(B) level
 	        		<select id="select-level-b"></select><br/><br/>
         		</label>
+        		<button id="fullscreen">Full screen</button><br/><br/>
         	</div>
         	<br/>
         	<div id="options" style="display: none;"  class="box">
