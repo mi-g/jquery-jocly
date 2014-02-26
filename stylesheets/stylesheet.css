@@ -477,3 +477,91 @@ footer a:hover {
 
 /* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
 @media only screen and (max-width: 479px) {}
+
+
+.box {
+	background-color: #f0f0f0;
+	border: 2px solid #e0e0e0;
+	border-radius: 1em;
+	padding: 1em;
+}
+
+//
+
+aside#sidebar h1 {
+  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif; 
+  font-size: 2.8em;
+  letter-spacing: -1px;
+  color: #474747;
+} 
+
+aside#sidebar h1:before {
+  color: #9ddcff;
+  padding-right: 0.3em;
+  margin-left: -0.9em;
+}
+
+aside#sidebar h2 {
+  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif; 
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #474747;
+} 
+aside#sidebar h2:before {
+  color: #9ddcff;
+  padding-right: 0.3em;
+  margin-left: -1.5em;
+}
+
+aside#sidebar h3 {
+  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif; 
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #474747;
+} 
+ 
+aside#sidebar h3:before {
+  color: #9ddcff;
+  padding-right: 0.3em;
+  margin-left: -2em;
+}
+
+aside#sidebar h4 {
+  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif; 
+  font-size: 15px;
+  font-weight: bold;
+  color: #474747;
+} 
+
+h4:before {
+  color: #9ddcff;
+  padding-right: 0.3em;
+  margin-left: -2.8em;
+}
+
+aside#sidebar h5 {
+  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif; 
+  font-size: 14px;
+  color: #474747;
+} 
+h5:before {
+  color: #9ddcff;
+  padding-right: 0.3em;
+  margin-left: -3.2em;
+}
+
+aside#sidebar h6 {
+  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif; 
+  font-size: .8em;
+  color: #474747;
+} 
+h6:before {
+  color: #9ddcff;
+  padding-right: 0.3em;
+  margin-left: -3.7em;
+}
+
+
+
