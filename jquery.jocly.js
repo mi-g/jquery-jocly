@@ -200,7 +200,7 @@ if (!jQuery) {
 	Applet.prototype.messageListener = function(message) {
 		var $this=this;
 		var callback,image;
-		console.log("jocly-applet received message from iframe",message);
+		console.log("jocly-applet received",message.type,"message from iframe",message);
 		switch(message.type) {
 		case 'ready':
 			this.ready=true;
@@ -378,6 +378,25 @@ if (!jQuery) {
 			id: id,
 			jsonSpecs: JSON.stringify(specs),
 			url: document.URL,
+		});
+	}
+	
+	Applet.prototype.setPlayers = function(players) {
+		this.sendMessage({
+			type: 'setPlayers',
+			players: players,
+		});
+	}
+	
+	Applet.prototype.restartGame = function() {
+		this.sendMessage({
+			type: 'restartGame',
+		});
+	}
+	
+	Applet.prototype.takeBack = function() {
+		this.sendMessage({
+			type: 'takeBack',
 		});
 	}
 	
