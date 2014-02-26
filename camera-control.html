@@ -34,8 +34,8 @@
     </style>
     <script>
 $(document).ready(function() {
-	$("#applet").jocly({});
-	$("#applet").jocly("localPlay","classic-chess",{ self: true });
+	$("#applet").jocly({ratio:.7});
+	$("#applet").jocly("localPlay","courier-chess",{ self: true });
 	$("#applet").jocly("setFeatures",{
 		notifyEnd: false,
 		hasEndSound: false,		
@@ -53,7 +53,7 @@ $(document).ready(function() {
 	$("#view2").on("click",function() {
 		$("#applet").jocly("updateCamera",{
 			x: 0,
-			y: 8000,
+			y: 10000,
 			z: 3000,
 			targetX: 0,
 			targetY: 0,
@@ -63,12 +63,11 @@ $(document).ready(function() {
 	$("#view3").on("click",function() {
 		$("#applet").jocly("updateCamera",{
 			x: -8000,
-			y: 10000,
+			y: -3000,
 			z: 3000,
 			targetX: -4000,
-			targetY: 6000,
+			targetY: 0,
 			targetZ: 0,
-			debug: true,
 		});
 	});
 	$("#animate1").on("click",function() {
@@ -84,7 +83,7 @@ $(document).ready(function() {
 	$("#animate2").on("click",function() {
 		$("#applet").jocly("updateCamera",{
 			x: 0,
-			y: 8000,
+			y: 10000,
 			z: 3000,
 			targetX: 0,
 			targetY: 0,
@@ -94,10 +93,10 @@ $(document).ready(function() {
 	$("#animate3").on("click",function() {
 		$("#applet").jocly("updateCamera",{
 			x: -8000,
-			y: 10000,
+			y: -3000,
 			z: 3000,
 			targetX: -4000,
-			targetY: 6000,
+			targetY: 0,
 			targetZ: 0,
 		},3000);
 	});
