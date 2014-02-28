@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+	<link rel="stylesheet" href="jquery.jocly.min.css">
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script src="jquery.jocly.min.js"></script>
+
+    <title>Jocly development stub web page</title>
+    <script>
+    	$(document).ready(function() {
+    		$("#applet").jocly({});
+    		$("#applet").jocly("localPlay","basic-chess",{ });
+    		$("#applet").jocly("setFeatures",{
+    			notifyEnd: false,
+    			hasEndSound: false,		
+    		});
+    		$("#options").joclyListener("listen","viewOptions",function(message) {
+    			console.log("viewOptions",message);
+    			$("#options-skin").hide().children("option").remove();
+    			if(message.options.skin && message.skins && message.skins.length>0) {
+    				message.skins.forEach(function(skin) {
+    					$("<option/>").attr("value",skin.name).text(skin.title).appendTo($("#options-skin"));
+    				});
+    				$("#options-skin").show().val(message.options.skin);
+    			}
+    			$("#options-notation").hide();
+    			if(message.options.notation!==undefined)
+    				$("#options-notation").show().children("input").prop("checked",message.options.notation);
+    			$("#options-moves").hide();
+    			if(message.options.moves!==undefined)
+    				$("#options-moves").show().children("input").prop("checked",message.options.moves);
+    			$("#options-autocomplete").hide();
+    			if(message.options.autocomplete!==undefined)
+    				$("#options-autocomplete").show().children("input").prop("checked",message.options.autocomplete);
+    			$("#options-sounds").hide();
+    			if(message.options.sounds!==undefined)
+    				$("#options-sounds").show().children("input").prop("checked",message.options.sounds);
+    			$("#options").show();
+    		});
+    		$("#options").on("change",function() {
+    			var options={};
+    			if($("#options-skin").is(":visible")) 
+    				options.skin=$("#options-skin").val();
+    			if($("#options-notation").is(":visible"))
+    				options.notation=$("#options-notation-input").prop("checked");
+    			if($("#options-moves").is(":visible"))
+    				options.moves=$("#options-moves-input").prop("checked");
+    			if($("#options-autocomplete").is(":visible"))
+    				options.autocomplete=$("#options-autocomplete-input").prop("checked");
+    			if($("#options-sounds").is(":visible"))
+    				options.sounds=$("#options-sounds-input").prop("checked");
+    			$("#applet").jocly("viewOptions",options);
+    		});
+    		var defaultLevel=0;
+    		$("#mode-panel").joclyListener("listen","players",function(message) {
+    			console.warn("players",message);
+    			function UpdatePlayer(player,key,levels) {
+        			if(player.type=="computer") {
+        				var select=$("#select-level-"+key);
+        				select.empty();
+        				for(var i=0;i<levels.length;i++)
+        					$("<option/>").attr("value",i).text(levels[i].label).appendTo(select);
+        				select.val(player.level);
+        				$("#level-"+key).show();
+        			} else
+        				$("#level-"+key).hide();        				
+    			}
+    			UpdatePlayer(message.players[1],'a',message.levels);
+    			UpdatePlayer(message.players[-1],'b',message.levels);
+    			var modeSelect=$("#mode");
+    			modeSelect.show();
+    			if(message.players[1].type=="self" && message.players[-1].type=="self")
+    				modeSelect.val("self-self");
+    			else if(message.players[1].type=="self" && message.players[-1].type=="computer")
+    				modeSelect.val("self-comp");
+    			else if(message.players[1].type=="computer" && message.players[-1].type=="self")
+    				modeSelect.val("comp-self");
+    			else if(message.players[1].type=="computer" && message.players[-1].type=="computer")
+    				modeSelect.val("comp-comp");
+    			else
+    				modeSelect.hide();
+    			message.levels.forEach(function(level,index) {
+    				if(level.isDefault)
+    					defaultLevel=index;
+    			});
+    			$("#mode-panel").show();
+    		});
+    		$("#mode-panel").on("change",function() {
+    			console.log("changed mode",$("#mode").val(),$("#select-level-a").val(),$("#select-level-b").val());
+    			var players;
+    			switch($("#mode").val()) {
+    			case "self-self":
+    				players={"1":{type:"self"},"-1":{type:"self"}};
+    				break;
+    			case "self-comp":
+    				players={"1":{type:"self"},"-1":{type:"computer",level:$("#select-level-b").val() || defaultLevel}};
+    				break;
+    			case "comp-self":
+    				players={"1":{type:"computer",level:$("#select-level-a").val() || defaultLevel},"-1":{type:"self"}};
+    				break;
+    			case "comp-comp":
+    				players={"1":{type:"computer",level:$("#select-level-a").val() || defaultLevel},
+    					"-1":{type:"computer",level:$("#select-level-b").val() || defaultLevel}};
+    				break;
+    			}
+    			$("#applet").jocly("setPlayers",players);
+    		});
+    		$("#restart").on("click",function() {
+    			$("#applet").jocly("restartGame");    			
+    		});
+    		$("#takeback").on("click",function() {
+    			$("#applet").jocly("takeBack");    			
+    		});
+        	$("#fullscreen").on("click",function() {
+        		$("#applet").joclyFullscreen();
+        	});
+    	});
+    </script>
+    <style type="text/css">
+* {
+	box-sizing: border-box;
+}
+body {
+}
+#container {
+	width: 100%;
+	display: table;
+	table-layout: fixed;
+}
+#applet {
+	display: table-cell;
+	width: 60%;
+}
+#controls {
+	display: table-cell;
+	width: 33%;
+	vertical-align: top;
+	padding: 0 .5em 0 .5em;
+}
+.box {
+	background-color: #f0f0f0;
+	border: 2px solid #e0e0e0;
+	border-radius: 1em;
+	padding: 1em;
+}
+    </style>
+  </head>
+
+  <body>
+
+	<div id="container">
+		<div id="applet"></div>
+		<div id="controls">
+	       	<div id="mode-panel" style="display: none;" class="box">
+	       		<h3>Controls</h3>
+	       		<button id="restart">Restart game</button><br/><br/>
+	       		<button id="takeback">Take back</button><br/><br/>
+	       		<select id="mode">
+	       			<option value="self-self">Self / Self</option>
+	       			<option value="self-comp">Self / Computer</option>
+	       			<option value="comp-self">Computer / Self</option>
+	       			<option value="comp-comp">Computer / Computer</option>
+	       		</select><br/><br/>
+	       		<label id="level-a" for="select-level-a">Computer(A) level<br/>
+	        		<select id="select-level-a"></select><br/><br/>
+	       		</label>
+	       		<label id="level-b" for="select-level-b">Computer(B) level<br/>
+	        		<select id="select-level-b"></select><br/><br/>
+	       		</label>
+	       		<button id="fullscreen">Full screen</button><br/><br/>
+	       	</div>
+	       	<br/>
+	       	<div id="options" style="display: none;"  class="box">
+	       		<h3>Options</h3>
+	       		<select id="options-skin"></select><br/><br/>
+	       		<label id="options-notation" for="options-notation-input">
+	       			<input id="options-notation-input" type="checkbox"/> Notation<br/>
+	       		</label>
+	       		<label id="options-moves" for="options-moves-input">
+	       			<input id="options-moves-input" type="checkbox"/> Show possible moves<br/>
+	       		</label>
+	       		<label id="options-autocomplete" for="options-autocomplete-input">
+	       			<input id="options-autocomplete-input" type="checkbox"/> Auto-complete moves<br/>
+	       		</label>
+	       		<label id="options-sounds" for="options-sounds-input">
+	       			<input id="options-sounds-input" type="checkbox"/> Sounds<br/>
+	       		</label>
+	       	</div>
+		</div>
+	</div>
+
+  </body>
+</html>
