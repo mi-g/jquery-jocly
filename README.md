@@ -28,7 +28,7 @@ If you just look after having a "play against the computer" applet in a site pag
     <title>Playing Chess</title>
     <link rel="stylesheet" href="jquery.jocly.min.css">
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src="jquery.jocly.min.js></script>
+    <script src="jquery.jocly.min.js"></script>
   </head>
   <body>
     <div data-jocly data-jocly-init='["localPlay","classic-chess"]'></div>
