@@ -1,4 +1,3 @@
-
 Jocly jQuery plugin
 ===================
 
@@ -29,7 +28,7 @@ If you just look after having a "play against the computer" applet in a site pag
     <title>Playing Chess</title>
     <link rel="stylesheet" href="jquery.jocly.min.css">
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src="jquery.jocly.min.js></script>
+    <script src="jquery.jocly.min.js"></script>
   </head>
   <body>
     <div data-jocly data-jocly-init='["localPlay","classic-chess"]'></div>
@@ -49,7 +48,7 @@ Alternatively, you may want to use javascript to setup the applet:
     <title>Playing Chess</title>
     <link rel="stylesheet" href="jquery.jocly.min.css">
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src="jquery.jocly.min.js></script>
+    <script src="jquery.jocly.min.js"></script>
     <script>
 $(document).ready(function() {
 	$("#jocly-applet").jocly().jocly("localPlay","classic-chess");
