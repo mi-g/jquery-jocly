@@ -63,18 +63,18 @@
     <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="389.976" y="846.992" width="187.1" height="8"/>
   </g>
   <g>
-    <rect style="fill: #ffffff" x="609.976" y="782.992" width="148.6" height="28"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="609.976" y="782.992" width="148.6" height="28"/>
-    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="684.276" y="801.992">sprite</text>
-    <rect style="fill: #ffffff" x="609.976" y="810.992" width="148.6" height="84"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="609.976" y="810.992" width="148.6" height="84"/>
+    <rect style="fill: #ffffff" x="609.976" y="782.992" width="164" height="28"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="609.976" y="782.992" width="164" height="28"/>
+    <text font-size="16" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="691.976" y="801.992">sprite</text>
+    <rect style="fill: #ffffff" x="609.976" y="810.992" width="164" height="84"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="609.976" y="810.992" width="164" height="84"/>
     <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="612.976" y="824.992">+file: string</text>
-    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="612.976" y="840.992">+clipwith: float</text>
-    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="612.976" y="856.992">+clipheight: float</text>
-    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="612.976" y="872.992">+clipx: float</text>
-    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="612.976" y="888.992">+clipy: float</text>
-    <rect style="fill: #ffffff" x="609.976" y="894.992" width="148.6" height="8"/>
-    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="609.976" y="894.992" width="148.6" height="8"/>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="612.976" y="840.992">+clipwith: integer</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="612.976" y="856.992">+clipheight: integer</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="612.976" y="872.992">+clipx: integer</text>
+    <text font-size="12.8" style="fill: #000000;text-anchor:start;font-family:monospace;font-style:normal;font-weight:normal" x="612.976" y="888.992">+clipy: integer</text>
+    <rect style="fill: #ffffff" x="609.976" y="894.992" width="164" height="8"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="609.976" y="894.992" width="164" height="8"/>
   </g>
   <g>
     <rect style="fill: #ffffff" x="800" y="620" width="47.1" height="28"/>
@@ -111,7 +111,7 @@
     <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="650.75,695.243 642.75,679.243 634.75,695.243 "/>
   </g>
   <g>
-    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="642.75,695.243 642.75,737.496 684.276,737.496 684.276,781.985 "/>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="642.75,695.243 642.75,737.496 691.976,737.496 691.976,781.985 "/>
     <polygon style="fill: #ffffff" points="650.75,695.243 642.75,679.243 634.75,695.243 "/>
     <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="650.75,695.243 642.75,679.243 634.75,695.243 "/>
   </g>
