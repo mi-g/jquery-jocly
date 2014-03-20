@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+	<link rel="stylesheet" href="jquery.jocly.min.css">
+ 	<style type="text/css">
+ .strong {
+ 	font-weight: bold;
+ }
+#pjn {
+	display: none;
+}
+.eog {
+	background-color: Lime;
+	font-weight: bold;
+	width: 100%;
+	text-align: center;
+	padding: 1em 0;
+	display: none;
+}
+ 	</style>
+ 	
+ 	
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script src="jquery.jocly.min.js"></script>
+    <title>Raumschach end of game tester by mi-g</title>
+    
+    <script>
+    $(document).ready(function() {
+    	
+    	$("#applet").jocly({ratio:1});
+    	
+    	$("#pjn").joclyPJN({
+    		onParsedGame: function(game) {
+    			console.log("Parsed game",game);
+    			var spec={
+    					format: "pjn",
+    					playedMoves: moves,
+    					tags: game.tags,
+    					initial: game.tags.FEN,
+    					self: true,
+    					current: moves.length,
+    				}
+    			$("#applet").jocly("localPlay","raumschach",spec);
+    		},
+    		navigation: false,
+    	});
+    	
+    	$("#pjn").joclyListener("listen","display",function(message) {
+    		var bs=JSON.parse(message.boardState);
+    		$(".eog").hide();
+    		if(bs.mFinished)
+    			if(bs.mWinner==1 || bs.mWinner==-1)
+    				$("#eog-mate").show();
+    			else
+    				$("#eog-stale").show();
+    		console.warn("bs",bs)
+    	});
+    		
+        var positions = {
+            	"kq-k": "k4/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/KQ3 w - - 0 1",
+            	"krr-k": "k4/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/KRR2 w - - 0 1",
+            	"krn-k": "k4/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/KRN2 w - - 0 1",
+            	"kbn-k": "k4/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/KBN2 w - - 0 1",
+            	"knn-k": "k4/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/KNN2 w - - 0 1",
+            	"krbb-k": "k4/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/KRBB1 w - - 0 1",
+            	"krbu-k": "k4/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/KRBU1 w - - 0 1",
+            	"kruu-k": "k4/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/KRUU1 w - - 0 1",
+            	"kbbb-k": "k4/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/KBBB1 w - - 0 1",
+            	"kbbu-k": "k4/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/KBBU1 w - - 0 1",
+            	"kbuu-k": "k4/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/KBUU1 w - - 0 1",
+            	"kuuuu-k": "1k3/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/KUUUU w - - 0 1",
+            	"kr-k": "k4/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/KR3 w - - 0 1",
+            	"krb-k": "k4/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/KRB2 w - - 0 1",
+            	"kbb-k": "k4/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/KBB2 w - - 0 1",
+            	"kru-k": "k4/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/KRU2 w - - 0 1",
+            	"kbu-k": "k4/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/KBU2 w - - 0 1",
+            	"knu-k": "k4/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/KNU2 w - - 0 1",
+            	"kuu-k": "k4/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/KUU2 w - - 0 1",
+            	"kuuu-k": "k4/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/5/KUUU1 w - - 0 1",
+        }
+
+        for(var f in positions) {
+        	var p=positions[f];
+        	var m=/^([^\-]*)\-([^\-]*)$/.exec(f);
+        	$("<option/>").attr("value",f).text(m[1].toUpperCase()+" vs "+m[2].toUpperCase()).appendTo($("#starting-positions"));
+        }
+        
+        $("#starting-positions").bind("change",function() {
+        	fenBoard = positions[$(this).val()];
+        	UpdatePJN();
+        }).val("kq-k");
+    	
+    	var fenBoard = positions["kq-k"];
+    	var moves=[];
+    	
+    	function UpdatePJN() {
+    		var now=new Date();
+    		var pjn='[Event "Jocly generated"]\n'+
+    			'[Date "'+now.getFullYear()+'.'+(now.getMonth()+1)+'.'+now.getDate()+'"]\n'+
+    			'[JoclyGame "raumschach"]\n'+
+    			'[FEN "'+fenBoard+'"]\n'+
+    			'\n'+
+    			moves.join(" ")+' *\n';
+    		$("#pjn").joclyPJN("load",pjn);
+    	}
+    	
+    	UpdatePJN();
+    	
+    });
+    </script>
+    
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Jquery-jocly</h1>
+        <h2>A jQuery plugin to integrate easily board games into a web site</h2>
+        <a href="https://github.com/mi-g/jquery-jocly" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+    
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+        
+        	<a href="index.html">Home</a>
+
+        	<h1>Raumschach end of game demo</h1>
+        	
+		    <div id="applet"></div>
+        
+        </section>
+        <aside id="sidebar">
+
+        	<select id="starting-positions"></select>
+
+		    <br/><br/>
+		    <div id="pjn" class="separator"></div>
+		    <div id="eog-mate" class="eog">Checkmate</div>
+		    <div id="eog-draw" class="eog">Draw</div>
+
+        </aside>
+
+      </div>
+    </div>
+
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-1041911-15");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
