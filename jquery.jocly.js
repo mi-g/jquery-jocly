@@ -521,6 +521,7 @@ if (!jQuery) {
 			},
 			varClasses: ['jocly-pjn-variation-1','jocly-pjn-variation-2','jocly-pjn-variation-3'],
 			commentsInitialVisible: true,
+			variationsInitialVisible: false,
 			onParsedGame: function() {},
 			navigation: true,
 		}
@@ -754,6 +755,7 @@ if (!jQuery) {
 				variation.addClass(this.options.varClasses[level%this.options.varClasses.length]);
 				elm.append(this.makeViewToggler({
 					label: this.options.strings.variation,
+					show: this.options.variationsInitialVisible,
 				},variation)).append(variation);
 			}
 				
