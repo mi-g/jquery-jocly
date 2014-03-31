@@ -76,7 +76,6 @@ if (!jQuery) {
 
 (function($) {
 	
-	var joclyBaseURL="http://embed.jocly.net";
 	var iframeIdRef = 1;
 
 	function Applet(jqElm) {
@@ -92,17 +91,19 @@ if (!jQuery) {
 			mode : "splash",
 			maxWidth: 1000,
 			ratio: 1,
+			baseURL: "http://embed.jocly.net",
+			masked: false,
 		}
 		if (options)
 			$.extend(this.options, options);
-		var iframeUrl = joclyBaseURL+"/jocly/plazza/embed";
+		var iframeUrl = this.options.baseURL+"/jocly/plazza/embed";
 		if(this.options.game)
 			iframeUrl+="/"+this.options.game;
 		iframeUrl+="?mode=" + this.options.mode;
 		this.iframeId = iframeIdRef++;
 		this.options.jei = this.iframeId;
 		this.listener=function(event) {
-			if(event.origin!=joclyBaseURL || event.data.jei!=$this.iframeId)
+			if(event.origin!=$this.options.baseURL || event.data.jei!=$this.iframeId)
 				return;
 			$this.messageListener(event.data);
 		}
@@ -129,6 +130,16 @@ if (!jQuery) {
 			"max-height": "100%",
 			"vertical-align": "bottom",
 		}));
+				
+		this.container=$("<div/>").css("padding-top",this.options.ratio*100+"%").appendTo(
+			$("<div/>").css({
+				position: "absolute",
+				top: 0,
+				bottom: 0,
+				left: 0,
+				right: 0,
+			}).appendTo(this.wrapper)
+		);
 
 		this.iframe.attr("width","100%").attr("height","100%").css({
 			position: "absolute",
@@ -137,18 +148,37 @@ if (!jQuery) {
 			bottom: 0,
 			left: 0,
 			"white-space": "normal",
-		}).appendTo(
-			$("<div/>").css("padding-top",this.options.ratio*100+"%").appendTo(
-				$("<div/>").css({
-					position: "absolute",
-					top: 0,
-					bottom: 0,
-					left: 0,
-					right: 0,
-				}).appendTo(this.wrapper)
-			)
-		);
+		}).appendTo(this.container);
 		
+		this.maskElm=$("<div/>").css({
+			display: this.options.masked?"block":"none",
+			position: "absolute",
+			top: 0,
+			right: 0,
+			width: "100%",
+			height: "100%",
+			'background-color': 'rgba(0,0,0,.8)',
+			"z-index": 1,
+		}).appendTo(this.wrapper);
+		
+		$("script[type='text/jocly-model-view']").each(function() {
+			try {
+				var specs=JSON.parse($(this).text());
+				$this.defineGame($(this).attr("data-jocly-game"),specs);
+			} catch(e) {
+				console.warn("Cannot parse game specs",e);
+			}
+		});
+
+		$("script[type='text/jocly-resources']").each(function() {
+			try {
+				var specs=JSON.parse($(this).text());
+				$this.defineResources($(this).attr("data-jocly-game"),specs);
+			} catch(e) {
+				console.warn("Cannot parse resources specs",id,e);
+			}
+		});
+
 		var initForm = $("<form/>").attr("action", iframeUrl).attr("method",
 				"post").attr("target", iframeName);
 		$("<input/>").attr("type", "hidden").attr("name", "data").attr("value",
@@ -168,7 +198,9 @@ if (!jQuery) {
 		this.init(options);
 	}
 	Applet.prototype.messageListener = function(message) {
-		console.log("jocly-applet received message from iframe",message);
+		var $this=this;
+		var callback,image;
+		console.log("jocly-applet received",message.type,"message from iframe",message);
 		switch(message.type) {
 		case 'ready':
 			this.ready=true;
@@ -187,11 +219,68 @@ if (!jQuery) {
 				$(".jocly-listener").trigger('jocly',{
 					type: 'display',
 					crc: crc,
+					boardState: message.boardState,
 				});
 			} else
 				$(".jocly-listener").trigger('jocly',{
 					type: 'undisplay',
 				});
+			break;
+		case 'snapshot':
+			callback=this.snapshotCallbacks[message.snapshotId];
+			delete this.snapshotCallbacks[message.snapshotId];
+			if(message.image) {
+				image=new Image();
+				image.onload=function() {
+					console.log("image",image.width,"x",image.height)
+					callback(image);					
+				}
+				image.src=message.image;
+			} else
+				callback(null);
+			break;
+		case 'camera':
+			callback=this.cameraCallbacks[message.cameraId];
+			delete this.cameraCallbacks[message.cameraId];
+			callback(message.camera);					
+			break;
+		case 'requestData':
+			if(message.dataType=="text")
+				$.ajax({
+					url: message.url,
+					dataType: "html",
+					success: function(data) {
+						$this.sendMessage({
+							type: "responseData",
+							data: data,
+							callbackId: message.callbackId,
+						});
+					},
+					error: function() {
+						$this.sendMessage({
+							type: "responseData",
+							data: null,
+							callbackId: message.callbackId,
+						});
+					}
+				});
+			else if(message.dataType=="image") {
+				image=new Image();
+				image.onload=function() {
+					var canvas = document.createElement("canvas");
+					canvas.width = image.width;
+					canvas.height = image.height;
+					var ctx = canvas.getContext("2d");
+					ctx.drawImage(image, 0, 0);
+					var dataURL = canvas.toDataURL(/\.jpe?g$/.test(message.url)?"image/jpeg":"image/png");
+					$this.sendMessage({
+						type: "responseData",
+						data: dataURL,
+						callbackId: message.callbackId,
+					});
+				}
+				image.src=message.url;
+			}
 			break;
 		default:
 			$(".jocly-listener").trigger('jocly',message);			
@@ -199,7 +288,7 @@ if (!jQuery) {
 	}
 	Applet.prototype.sendMessage = function(message) {
 		if(this.ready)
-			this.iframe[0].contentWindow.postMessage(message,joclyBaseURL);
+			this.iframe[0].contentWindow.postMessage(message,this.options.baseURL);
 		else
 			this.queuedMessages.push(message);
 	}
@@ -226,15 +315,101 @@ if (!jQuery) {
 	Applet.prototype.getId = function() {
 		return this.iframeId;
 	}
+	Applet.prototype.emptyBoard = function(gameName) {
+		this.sendMessage({
+			type: "emptyBoard",
+			gameName: gameName,
+		});
+	}
+	Applet.prototype.viewOptions = function(options) {
+		this.sendMessage({
+			type: "viewOptions",
+			options: options,
+		});
+	}
+	Applet.prototype.mask = function(masked) {
+		if(masked)
+			this.maskElm.show();
+		else
+			this.maskElm.hide();
+	}
+	Applet.prototype.updateCamera = function(camera,delay) {
+		this.sendMessage({
+			type: "updateCamera",
+			camera: camera,
+			delay: delay,
+		});
+	}
+	Applet.prototype.snapshotCallbacks={};
+	Applet.prototype.snapshot = function(callback) {
+		var snapshotId=1;
+		while(snapshotId in this.snapshotCallbacks)
+			snapshotId++;
+		this.snapshotCallbacks[snapshotId]=callback;
+		this.sendMessage({
+			type: "snapshot",
+			snapshotId: snapshotId,
+		});
+	}
+	Applet.prototype.cameraCallbacks={};
+	Applet.prototype.getCamera = function(callback) {
+		var cameraId=1;
+		while(cameraId in this.cameraCallbacks)
+			cameraId++;
+		this.cameraCallbacks[cameraId]=callback;
+		this.sendMessage({
+			type: "getCamera",
+			cameraId: cameraId,
+		});
+	}
+
+	Applet.prototype.defineGame = function(id,specs) {
+		this.sendMessage({
+			type: 'defineGame',
+			id: id,
+			jsonSpecs: JSON.stringify(specs),
+			url: document.URL,
+		});
+	}
+	
+	Applet.prototype.defineResources = function(id,specs) {
+		this.sendMessage({
+			type: 'defineResources',
+			id: id,
+			jsonSpecs: JSON.stringify(specs),
+			url: document.URL,
+		});
+	}
+	
+	Applet.prototype.setPlayers = function(players) {
+		this.sendMessage({
+			type: 'setPlayers',
+			players: players,
+		});
+	}
+	
+	Applet.prototype.restartGame = function() {
+		this.sendMessage({
+			type: 'restartGame',
+		});
+	}
+	
+	Applet.prototype.takeBack = function() {
+		this.sendMessage({
+			type: 'takeBack',
+		});
+	}
 	
 	$.fn.jocly = function() {
 		var $arguments = arguments;
 		var retVal = this;
 		this.each(function() {
 			var applet = $(this).data("jocly-applet");
+			var justCreated=false;
 			if (!applet) {
 				applet = new Applet($(this));
-				var options = null;
+				justCreated=true;
+				var options = $arguments[0] || null;
 				var dataAttr = $(this).attr("data-jocly");
 				if (dataAttr)
 					try {
@@ -249,6 +424,8 @@ if (!jQuery) {
 			}
 			if ($arguments.length > 0) {
 				var method = $arguments[0];
+				if(justCreated && typeof method == "object")
+					return;
 				if (typeof method != "string")
 					throw new Error(
 							"Jocly applet: first argument must be a string specifying the method to be called");
@@ -344,6 +521,7 @@ if (!jQuery) {
 			},
 			varClasses: ['jocly-pjn-variation-1','jocly-pjn-variation-2','jocly-pjn-variation-3'],
 			commentsInitialVisible: true,
+			variationsInitialVisible: false,
 			onParsedGame: function() {},
 			navigation: true,
 		}
@@ -577,6 +755,7 @@ if (!jQuery) {
 				variation.addClass(this.options.varClasses[level%this.options.varClasses.length]);
 				elm.append(this.makeViewToggler({
 					label: this.options.strings.variation,
+					show: this.options.variationsInitialVisible,
 				},variation)).append(variation);
 			}
 				
@@ -739,6 +918,210 @@ if (!jQuery) {
 	});
 
 }(jQuery));
+
+;/* This Source Code Form is subject to the terms of the Mozilla Public
+* License, v. 2.0. If a copy of the MPL was not distributed with this
+* file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+/**
+* @author mig <michel.gutierrez@gmail.com>
+* @module jquery-jocly
+* @overview Jocly applet event receiver.
+*/
+
+(function($) {
+	
+	function Listener(jqElm) {
+		this.jqElm = jqElm;
+		this.jqElm.addClass("jocly-listener");
+	}
+	Listener.prototype.init = function(options) {
+		var $this=this;
+		this.options = {
+		}
+		if (options)
+			$.extend(this.options, options);
+		this.listeners={};
+		this.jqElm.bind("jocly",function(event,data) {
+			var handlers=$this.listeners[data.type];
+			if(handlers)
+				handlers.forEach(function(handler) {
+					handler.call($this.jqElm,data);
+				});
+		});
+	}
+	Listener.prototype.listen = function(type,handler) {
+		if(!this.listeners[type])
+			this.listeners[type]=[];
+		this.listeners[type].push(handler);
+	}
+	Listener.prototype.remove = function(options) {
+		this.listeners={};
+		this.jqElm.unbind("jocly");
+	}
+	$.fn.joclyListener = function() {
+		var $arguments = arguments;
+		this.each(function() {
+			var listener = $(this).data("jocly-listener");
+			if (!listener) {
+				listener = new Listener($(this));
+				var options = null;
+				listener.init(options);
+				$(this).data("jocly-listener", listener);
+			}
+			if ($arguments.length > 0) {
+				var method = $arguments[0];
+				if (typeof method != "string")
+					throw new Error(
+							"Jocly listener: first argument must be a string specifying the method to be called");
+				if (typeof listener[method] != "function")
+					throw new Error("Jocly listener: no such method '"
+							+ method + "'");
+				listener[method].apply(listener, Array.prototype.splice
+						.call($arguments, 1));
+			}
+		});
+		return this;
+	};
+	
+}(jQuery));
+
+
+;/* This Source Code Form is subject to the terms of the Mozilla Public
+* License, v. 2.0. If a copy of the MPL was not distributed with this
+* file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+/**
+* @author mig <michel.gutierrez@gmail.com>
+* @module jquery-jocly
+* @overview Board game site integration.
+*/
+
+(function($) {
+	
+	function GetFullScreenMethods() {
+		var fullscreenPrefix=null;
+		var fullscreenPrefixes=["","moz","webkit","o","ms"];
+		var fullScreenMethods=null;
+		function Uncapitalize(m) {
+			return m.substr(0,1).toLowerCase() + m.substr(1);  
+		}
+		for(var i in fullscreenPrefixes) {
+			var prefix=fullscreenPrefixes[i];
+			var rfsFnt=Uncapitalize(prefix+"RequestFullScreen");
+			if(typeof $("body")[0][rfsFnt] == "function") {
+				fullScreenMethods={
+					request: rfsFnt,
+					event: prefix+"fullscreenchange",
+					element: Uncapitalize(prefix+"FullScreenElement"),
+				};
+				switch(prefix) {
+				case "webkit": 
+					fullScreenMethods.element="webkitCurrentFullScreenElement";
+					break;
+				}
+				break;
+			}
+		}
+		return fullScreenMethods;
+	}
+
+	var self = {};
+	var fullscreenMethods;
+	
+	self.canFullscreen = function() {
+		if(fullscreenMethods===undefined)
+			fullscreenMethods=GetFullScreenMethods();
+		return fullscreenMethods!=null;
+	};
+	
+	self.isFullscreen = function() {
+		if(!fullscreenMethods)
+			return false;
+		return !!document[fullscreenMethods.element];
+	};
+	
+	self.cancelFullscreen = function(widget,updateFnt) {
+		if(!fullscreenMethods || !document[fullscreenMethods.element])
+			return;
+		if (document.cancelFullScreen)
+			document.cancelFullScreen();
+		else if (document.mozCancelFullScreen)
+			document.mozCancelFullScreen();
+		else if (document.webkitCancelFullScreen)
+			document.webkitCancelFullScreen();
+	};
+	
+	self.fullscreen = function(widget,updateFnt) {
+		if(!self.canFullscreen())
+			return;
+		if(arguments.length===0 || !widget)
+			widget=$("body");
+		if(arguments.length<2)
+			updateFnt=function(){};
+		if(fullscreenMethods) {
+			var fullScreenElement=document[fullscreenMethods.element];
+			var originalSize={ width: widget.width(), height: widget.height() };
+			$(document).bind(fullscreenMethods.event,function() {
+				setTimeout(function() {
+					var width, height, entering;
+					if(document[fullscreenMethods.element]) {
+						entering=true;
+						//widget.addClass("jpz-full-size");
+						width=document[fullscreenMethods.element].offsetWidth;
+						height=document[fullscreenMethods.element].offsetHeight;
+					} else {
+						entering=false;
+						//widget.removeClass("jpz-full-size");
+						width=originalSize.width,
+						height=originalSize.height,
+						$(document).unbind(fullscreenMethods.event);
+					}
+					if(fullScreenElement) {
+						fullScreenElement.width(width);
+						fullScreenElement.height(height);
+					}
+					updateFnt(entering);
+				},0);
+			});
+			widget[0][fullscreenMethods.request]();
+		}
+	};
+	
+	$.fn.joclyFullscreen = function() {
+		this.each(function() {
+			var $this=$(this);
+			self.fullscreen($(this),function(fullscreen) {
+				if($this.data('jocly-applet')) {
+					var img=$this.find("img");
+					var child=$this.children();
+					if(fullscreen) {
+						img.hide();
+						child.css({
+							height: "100%",
+							width: "100%",
+							top: 0,
+							left: 0,
+							position: "fixed",
+						});
+					} else {
+						img.show();
+						child.css({
+							height: null,
+							width: null,
+							top: null,
+							left: null,
+							position: "relative",
+						});
+					}
+				}
+			});
+		});
+		return this;
+	};
+	
+	
+})(jQuery);
 
 ;PJNParser=(function() {
 ;/* parser generated by jison 0.4.13 */
