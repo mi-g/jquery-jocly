@@ -108,10 +108,22 @@
 					var child=$this.children();
 					if(fullscreen) {
 						img.hide();
-						child.css("height","100%");
+						child.css({
+							height: "100%",
+							width: "100%",
+							top: 0,
+							left: 0,
+							position: "fixed",
+						});
 					} else {
 						img.show();
-						child.css("height",null);
+						child.css({
+							height: null,
+							width: null,
+							top: 0,
+							left: 0,
+							position: "relative",
+						});
 					}
 				}
 			});
