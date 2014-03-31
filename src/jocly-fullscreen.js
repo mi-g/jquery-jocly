@@ -120,8 +120,8 @@
 						child.css({
 							height: null,
 							width: null,
-							top: 0,
-							left: 0,
+							top: null,
+							left: null,
 							position: "relative",
 						});
 					}
