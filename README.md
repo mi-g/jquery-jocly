@@ -179,6 +179,7 @@ A resource can also a javascript file to be loaded as part of the model or the v
 Constructor options:
 
 - **commentsInitialVisible**: whether the comments are displayed or collapsed by default (*boolean*)
+- **variationsInitialVisible**: whether the variations are displayed or collapsed by default (*boolean*)
 - **onParsedGame**: a function to be called when a game is parsed. This is useful to make use of the game meta-tags elsewhere in the page. 
 This callback receives a game object, holding a *tags* field as a map.
 - **navigation**: enable navigating the moves (clicking a move update the game being played in the attached applet), default is true. 
