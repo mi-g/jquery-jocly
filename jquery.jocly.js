@@ -643,7 +643,6 @@ if (!jQuery) {
 	PJN.prototype.parseGame = function(data,callback) {
 		var $this=this;
 		PJNParser.parse(data,function(game) {
-			console.log("parsed",game)
 			$this.game={
 				tags: game.tags,
 				root: game.rootNode,
@@ -836,7 +835,6 @@ if (!jQuery) {
 		
 		if(this.game.tags.FEN)
 			spec.initial=this.game.tags.FEN;
-		console.warn("sending view",gameName)
 		this.applets.jocly("view",gameName,spec);
 	}
 	
