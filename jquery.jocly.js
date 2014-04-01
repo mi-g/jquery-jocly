@@ -643,6 +643,7 @@ if (!jQuery) {
 	PJN.prototype.parseGame = function(data,callback) {
 		var $this=this;
 		PJNParser.parse(data,function(game) {
+			console.log("parsed",game)
 			$this.game={
 				tags: game.tags,
 				root: game.rootNode,
@@ -835,6 +836,7 @@ if (!jQuery) {
 		
 		if(this.game.tags.FEN)
 			spec.initial=this.game.tags.FEN;
+		console.warn("sending view",gameName)
 		this.applets.jocly("view",gameName,spec);
 	}
 	
@@ -1442,7 +1444,7 @@ parse: function parse(input) {
 		var tagsCount=0;
 		for(var tag in yy.tags)
 			tagsCount++;
-		if((yy.rootNode.next || tagsCount>0) && yy.compiledGame) 
+		if((yy.rootNode.next || tagsCount>0) && yy.compiledGame && yy.lexer.yylloc.range[1]>yy.startOffset) 
 			yy.compiledGame({
 				offset: yy.startOffset,
 				length: yy.lexer.yylloc.range[1]-yy.startOffset,
