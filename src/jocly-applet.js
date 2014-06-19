@@ -34,6 +34,8 @@
 		if(this.options.game)
 			iframeUrl+="/"+this.options.game;
 		iframeUrl+="?mode=" + this.options.mode;
+		if(this.options.skin)
+			iframeUrl+="&skin="+encodeURIComponent(this.options.skin);
 		this.iframeId = iframeIdRef++;
 		this.options.jei = this.iframeId;
 		this.listener=function(event) {
