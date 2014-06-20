@@ -93,7 +93,6 @@
 	}
 	
 	function AddNAG(yy,nag) {
-		//var nagText=nagMap[nag];
 		var nagText=GetNagString(nag);
 		if(nagText===undefined)
 			nagText="$"+nag;
