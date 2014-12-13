@@ -36,6 +36,8 @@
 		iframeUrl+="?mode=" + this.options.mode;
 		if(this.options.skin)
 			iframeUrl+="&skin="+encodeURIComponent(this.options.skin);
+		if(this.options.joclyStyle)
+			iframeUrl+="&style="+encodeURIComponent(this.options.joclyStyle);
 		this.iframeId = iframeIdRef++;
 		this.options.jei = this.iframeId;
 		this.listener=function(event) {
