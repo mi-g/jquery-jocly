@@ -185,6 +185,8 @@ Constructor options:
 
 - **commentsInitialVisible**: whether the comments are displayed or collapsed by default (*boolean*)
 - **variationsInitialVisible**: whether the variations are displayed or collapsed by default (*boolean*)
+- **commentsToggleable**: whether the comments can be deployed/collapsed (*boolean*)
+- **variationsToggleable**: whether the variations can be deployed/collapsed (*boolean*)
 - **onParsedGame**: a function to be called when a game is parsed. This is useful to make use of the game meta-tags elsewhere in the page. 
 This callback receives a game object, holding a *tags* field as a map.
 - **navigation**: enable navigating the moves (clicking a move update the game being played in the attached applet), default is true. 

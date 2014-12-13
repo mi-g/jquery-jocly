@@ -41,6 +41,8 @@
 			varClasses: ['jocly-pjn-variation-1','jocly-pjn-variation-2','jocly-pjn-variation-3'],
 			commentsInitialVisible: true,
 			variationsInitialVisible: false,
+			commentsToggleable: true,
+			variationsToggleable: true,
 			onParsedGame: function() {},
 			navigation: true,
 			nag: {
@@ -412,6 +414,7 @@
 				elm.append(this.makeViewToggler({
 					label: this.options.strings.comment,
 					show: this.options.commentsInitialVisible,
+					toggleable: this.options.commentsToggleable,
 				},comment)).append(comment);
 			}
 			if(node.variation) {
@@ -420,6 +423,7 @@
 				elm.append(this.makeViewToggler({
 					label: this.options.strings.variation,
 					show: this.options.variationsInitialVisible,
+					toggleable: this.options.variationsToggleable,
 				},variation)).append(variation);
 			}
 				
@@ -436,22 +440,25 @@
 			className: '',
 			show: false,
 		},options);
-		var state=options.show;
-		function Update() {
-			if(state) {
-				child.show();
-				elm.text(options.label+options.openedSuff);
-			} else {
-				child.hide();
-				elm.text(options.label+options.closedSuff);				
+		if(options.toggleable) {
+			var state=options.show;
+			function Update() {
+				if(state) {
+					child.show();
+					elm.text(options.label+options.openedSuff);
+				} else {
+					child.hide();
+					elm.text(options.label+options.closedSuff);				
+				}
 			}
-		}
-		var elm=$("<span/>").addClass('jocly-pjn-toggler').on("click",function() {
-			state=!state;
+			var elm=$("<span/>").addClass('jocly-pjn-toggler').on("click",function() {
+				state=!state;
+				Update();
+			});
 			Update();
-		});
-		Update();
-		return elm;
+			return elm;
+		} else
+			return $("<span/>");
 	}
 
 	PJN.prototype.display = function() {
