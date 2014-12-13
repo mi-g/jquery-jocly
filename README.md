@@ -118,6 +118,9 @@ Constructor options:
 
 - **ratio**: the height/width ratio, default is 1.0
 - **maxWidth**: the maximum number of pixels horizontally, default is 1000
+- **joclyStyle**: style to be used for the 'Powered by Jocly' bar (*string*)
+    + `dark`: white on dark (default)
+    + `light`: dark on white
 
 Methods:
 
@@ -130,6 +133,9 @@ Methods:
 	    * *hasHistory*: the list of played moves on the right (*boolean*)
 	    * *hasControls*: a toolbar at the bottom with control buttons (*boolean*)
 	    * *hasToolbar*: the bottom-most toolbar with player names (*boolean*)
+	    * *hasHistoryButton*: should the history button in the bottom bar be displayed (*boolean*)
+	    * *nav*: object controlling the navigation bar (*object*): 
+	        - *navBarStyle*: CSS style to be used in the bottom bar (*object*)
 - **viewOptions**: modify the applet view options.
 	+ **options**: 
 		* *skin*: the skin name (*string*)
