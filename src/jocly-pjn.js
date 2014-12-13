@@ -440,17 +440,17 @@
 			className: '',
 			show: false,
 		},options);
+		function Update() {
+			if(state) {
+				child.show();
+				elm.text(options.label+options.openedSuff);
+			} else {
+				child.hide();
+				elm.text(options.label+options.closedSuff);				
+			}
+		}
 		if(options.toggleable) {
 			var state=options.show;
-			function Update() {
-				if(state) {
-					child.show();
-					elm.text(options.label+options.openedSuff);
-				} else {
-					child.hide();
-					elm.text(options.label+options.closedSuff);				
-				}
-			}
 			var elm=$("<span/>").addClass('jocly-pjn-toggler').on("click",function() {
 				state=!state;
 				Update();
