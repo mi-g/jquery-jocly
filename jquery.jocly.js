@@ -951,6 +951,7 @@ if (!jQuery) {
 		var tags=this.makeTagsDOM(this.game.tags);
 		this.jqView.append(this.makeViewToggler({
 			label: this.options.strings.tags,
+			toggleable: true,
 		},tags)).append(tags).append(this.makeNodesDOM(this.game.root,0,0,this.game.tags.FEN || "",""));
 	}
 	
