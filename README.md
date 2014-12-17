@@ -201,6 +201,8 @@ otherwise, a drop-down selector is displayed to pick a particular game
 	* **url**: the url to get the document from
 - **attachApplet**: tell the widget which applet to work with
 	* **applet**: a jQuery selector containing the applet (initied with the *jocly* plugin)
+- **select**: select a particular game by index from the PJN documebt
+	* **index**: a 0-based integer representing the game index
 
 ### joclyListener
 
