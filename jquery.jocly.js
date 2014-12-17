@@ -776,6 +776,8 @@ if (!jQuery) {
 		$("<option/>").attr("value",'').text(this.options.strings.pickAGame).appendTo(select);
 		this.games.forEach(function(game,gameIndex) {
 			var label=FormatTag(game.tags,'White') +' '+$this.options.strings.vs+' '+FormatTag(game.tags,'Black');
+			if(game.tags.Result && game.tags.Result!='*')
+				label+=" - "+game.tags.Result;
 			$("<option/>").attr("value",gameIndex).text(label).appendTo(select);
 		});
 		select.appendTo(this.jqElm);
@@ -790,7 +792,11 @@ if (!jQuery) {
 			});
 		});
 	}
-
+	
+	PJN.prototype.select = function(index) {
+		this.jqElm.find("select.jocly-pjn-selector").val(index).trigger("change");
+	}
+	
 	PJN.prototype.parseGame = function(data,callback) {
 		var $this=this;
 		PJNParser.parse(data,function(game) {
