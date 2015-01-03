@@ -25,7 +25,7 @@
 			mode : "splash",
 			maxWidth: 1000,
 			ratio: 1,
-			baseURL: "http://embed.jocly.net",
+			baseURL: "https://embed.jocly.net",
 			masked: false,
 		}
 		if (options)
