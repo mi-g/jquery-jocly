@@ -25,7 +25,7 @@
 			mode : "splash",
 			maxWidth: 1000,
 			ratio: 1,
-			baseURL: "https://embed.jocly.net",
+			baseURL: "https://www.jocly.com",
 			masked: false,
 		}
 		if (options)
@@ -40,6 +40,8 @@
 			iframeUrl+="&style="+encodeURIComponent(this.options.joclyStyle);
 		this.iframeId = iframeIdRef++;
 		this.options.jei = this.iframeId;
+		if(this.options.ratio=='auto')
+			this.options.ratio = this.jqElm.height() / this.jqElm.width(); 
 		this.listener=function(event) {
 			if(event.origin!=$this.options.baseURL || event.data.jei!=$this.iframeId)
 				return;
