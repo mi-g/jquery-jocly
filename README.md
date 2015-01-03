@@ -116,7 +116,7 @@ If you want to call several methods at init, you can group them with an enclosin
 
 Constructor options:
 
-- **ratio**: the height/width ratio, default is 1.0
+- **ratio**: the height/width ratio, default is 1.0. If set to 'auto', the value is the current container element ratio.
 - **maxWidth**: the maximum number of pixels horizontally, default is 1000
 - **joclyStyle**: style to be used for the 'Powered by Jocly' bar (*string*)
     + `dark`: white on dark (default)
