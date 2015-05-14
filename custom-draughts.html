@@ -15,8 +15,32 @@
     <![endif]-->
 
 	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-	<script src="jquery.jocly.min.js"></script>
+	<script src="jquery.jocly.js"></script>
     <title>Jquery-jocly by mi-g</title>
+    
+    <script type="text/jocly-model-view" data-jocly-game="draughts/custom-draughts">
+{
+	"model": {
+	    "gameOptions": {
+	      	"preventRepeat": true,
+      		"width": 6,
+      		"height": 6,
+      		"initial": {
+		        "a": [[0,0],[0,1],[0,2],[0,3],[0,4],[0,5],[1,0],[1,1],[1,2],[1,3],[1,4],[1,5]],
+        		"b": [[5,0],[5,1],[5,2],[5,3],[5,4],[5,5],[4,0],[4,1],[4,2],[4,3],[4,4],[4,5]]
+      		},
+      		"variant": {
+		        "mustMoveForwardStrict": true,
+        		"lastRowCrown": true,
+        		"captureLongestLine": true,
+        		"lastRowFactor": 0.001
+      		},
+      		"uctTransposition": "state"
+    	}
+	}
+}
+	</script>
+    
   </head>
 
   <body>
@@ -32,35 +56,16 @@
       <div class="inner clearfix">
         <section id="main-content">
         
-        	<h2>Demos</h2>
+        	<a href="index.html">Home</a>
+
+        	<h1>Custom variant demo</h1>
         	
-        	<ul>
-        	<li><a href="simple-hvsc.html">Simple applet demo</a></li>
-        	<li><a href="view-pjn.html">PJN view demo</a></li>
-        	<li><a href="view-pjn2.html">Multiple PJN view demo</a></li>
-        	<li><a href="view-options.html">View options demo</a></li>
-        	<li><a href="camera-control.html">Camera control demo</a></li>
-        	<li><a href="snapshot.html">Snapshot demo</a></li>
-        	<li><a href="custom-res.html">Custom resources demo</a></li>
-        	<li><a href="custom-var.html">Custom variant demo (Chess)</a></li>
-        	<li><a href="custom-draughts.html">Custom variant demo (Draughts)</a></li>
-        	<li><a href="full-play.html">Full play demo</a></li>
-        	<li><a href="raumschach-eog.html">Raumschach end of game demo</a></li>
-        	</ul>
+        	<h2>This demo shows a hosting-page-defined variant based on International draughts with modified board size.</h2>
+        	
+        	<div data-jocly data-jocly-init='["localPlay","custom-draughts"]'></div>
         
         </section>
 
-        <aside id="sidebar">
-          <a href="https://github.com/mi-g/jquery-jocly/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/mi-g/jquery-jocly/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
-
-        </aside>
       </div>
     </div>
 
