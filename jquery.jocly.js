@@ -104,6 +104,8 @@ if (!jQuery) {
 			iframeUrl+="&skin="+encodeURIComponent(this.options.skin);
 		if(this.options.joclyStyle)
 			iframeUrl+="&style="+encodeURIComponent(this.options.joclyStyle);
+		if(this.options.userTag!==undefined)
+			iframeUrl+="&userTag="+this.options.userTag;
 		this.iframeId = iframeIdRef++;
 		this.options.jei = this.iframeId;
 		if(this.options.ratio=='auto')
@@ -308,6 +310,13 @@ if (!jQuery) {
 	Applet.prototype.localPlay = function(gameName,spec) {
 		this.sendMessage({
 			type: "localPlay",
+			gameName: gameName,
+			data: spec || {},
+		});
+	}
+	Applet.prototype.onlinePlay = function(gameName,spec) {
+		this.sendMessage({
+			type: "onlinePlay",
 			gameName: gameName,
 			data: spec || {},
 		});
